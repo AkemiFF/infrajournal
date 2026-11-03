@@ -1,0 +1,17 @@
+id: adr-001
+title: PostgreSQL instead of SQLite
+status: accepted
+date: 2026-10-12
+context: >-
+  Multiple application services need shared persistent data, and the worker
+  performs concurrent writes while the web application serves requests.
+decision: >-
+  Use PostgreSQL 16 as the application database and keep all application
+  services on the private internal network.
+consequences:
+  - Database backup and restore procedures are required.
+  - The database must be upgraded on a planned maintenance cadence.
+related_services:
+  - postgres
+  - web
+  - worker

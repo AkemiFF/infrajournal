@@ -1,0 +1,29 @@
+version: 1
+
+project:
+  name: journal-demo
+
+scan:
+  root: .
+  include:
+    - "compose.yml"
+    - "nginx/**/*.conf"
+  exclude:
+    - "**/node_modules/**"
+    - "**/.git/**"
+    - "**/secrets/**"
+    - "infra-docs/**"
+  maxFileSizeBytes: 1048576
+  maxDepth: 12
+
+output:
+  directory: ./infra-docs
+
+decisions:
+  directory: ./infra-decisions
+
+backups:
+  - volume: pgdata
+    policy: Nightly pg_dump encrypted and copied off-site; restore drill quarterly.
+  - volume: redisdata
+    policy: Daily append-only file snapshot retained for seven days.

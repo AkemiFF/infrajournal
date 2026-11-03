@@ -1,0 +1,17 @@
+id: adr-003
+title: Documented backup policy for stateful services
+status: accepted
+date: 2026-10-20
+context: >-
+  Two services hold state that cannot be rebuilt from source: PostgreSQL and
+  Redis. User uploads also need an explicit retention decision.
+decision: >-
+  Run nightly PostgreSQL dumps and daily Redis snapshots. The uploads volume
+  remains under review until an off-site replication job is added.
+consequences:
+  - Restore drills must be scheduled.
+  - The uploads volume currently has no documented backup policy.
+related_services:
+  - postgres
+  - redis
+  - web

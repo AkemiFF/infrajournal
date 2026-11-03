@@ -1,0 +1,18 @@
+id: adr-002
+title: One public reverse proxy with two networks
+status: accepted
+date: 2026-10-14
+context: >-
+  The application needs public HTTP routing, but the database and cache must
+  not be directly reachable from the internet.
+decision: >-
+  Terminate TLS in Nginx on the edge network. Keep PostgreSQL, Redis and the
+  worker on an internal network with no published ports.
+consequences:
+  - Nginx becomes the only service with public ports.
+  - Certificate renewal must be monitored separately.
+related_services:
+  - nginx
+  - web
+  - postgres
+  - redis

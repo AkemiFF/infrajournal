@@ -1,0 +1,98 @@
+name: journal-demo
+
+services:
+  nginx:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - edge
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/certs:/etc/nginx/certs:ro
+    depends_on:
+      - web
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/healthz"]
+      interval: 30s
+
+  web:
+    image: ghcr.io/example/journal-web:1.4.2
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgres://journal:${POSTGRES_PASSWORD}@postgres:5432/journal
+      REDIS_URL: redis://redis:6379/0
+      SESSION_SECRET: ${SESSION_SECRET}
+      PUBLIC_ORIGIN: https://journal.example.com
+    networks:
+      - edge
+      - internal
+    volumes:
+      - uploads:/app/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "node", "healthcheck.mjs"]
+      interval: 30s
+
+  worker:
+    image: ghcr.io/example/journal-web:1.4.2
+    restart: unless-stopped
+    command: ["node", "worker.mjs"]
+    environment:
+      DATABASE_URL: postgres://journal:${POSTGRES_PASSWORD}@postgres:5432/journal
+      REDIS_URL: redis://redis:6379/0
+    networks:
+      - internal
+    depends_on:
+      - postgres
+      - redis
+
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: journal
+      POSTGRES_USER: journal
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U journal -d journal"]
+      interval: 10s
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redisdata:/data
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+
+networks:
+  edge:
+    driver: bridge
+  internal:
+    driver: bridge
+
+volumes:
+  pgdata:
+    labels:
+      infrajournal.description: "PostgreSQL data directory"
+  redisdata:
+    labels:
+      infrajournal.description: "Redis append-only data"
+  uploads:
+    labels:
+      infrajournal.description: "User-uploaded media"
