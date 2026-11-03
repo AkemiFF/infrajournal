@@ -1,0 +1,194 @@
+{
+  "$id": "https://infrajournal.dev/schema/config-1.json",
+  "title": "InfraJournal Configuration",
+  "description": "Configuration schema for infrajournal.yml.",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "version": {
+      "default": 1,
+      "type": "number",
+      "const": 1
+    },
+    "project": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "scan": {
+      "default": {
+        "root": ".",
+        "include": [
+          "**/compose.yml",
+          "**/compose.yaml",
+          "**/docker-compose.yml",
+          "**/docker-compose.yaml",
+          "**/Caddyfile",
+          "**/Caddyfile.*",
+          "**/nginx/*.conf",
+          "**/nginx/**/*.conf"
+        ],
+        "exclude": [
+          "**/node_modules",
+          "**/node_modules/**",
+          "**/.git",
+          "**/.git/**",
+          "**/.hg",
+          "**/.hg/**",
+          "**/.svn",
+          "**/.svn/**",
+          "**/dist",
+          "**/dist/**",
+          "**/build",
+          "**/build/**",
+          "**/coverage",
+          "**/coverage/**",
+          "**/.next",
+          "**/.next/**",
+          "**/.cache",
+          "**/.cache/**",
+          "**/infra-docs",
+          "**/infra-docs/**",
+          "**/secrets",
+          "**/secrets/**",
+          "**/.env",
+          "**/.env.*"
+        ],
+        "maxFileSizeBytes": 1048576,
+        "maxDepth": 12,
+        "maxFiles": 5000
+      },
+      "type": "object",
+      "properties": {
+        "root": {
+          "default": ".",
+          "type": "string",
+          "minLength": 1
+        },
+        "include": {
+          "default": [
+            "**/compose.yml",
+            "**/compose.yaml",
+            "**/docker-compose.yml",
+            "**/docker-compose.yaml",
+            "**/Caddyfile",
+            "**/Caddyfile.*",
+            "**/nginx/*.conf",
+            "**/nginx/**/*.conf"
+          ],
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "exclude": {
+          "default": [
+            "**/node_modules",
+            "**/node_modules/**",
+            "**/.git",
+            "**/.git/**",
+            "**/.hg",
+            "**/.hg/**",
+            "**/.svn",
+            "**/.svn/**",
+            "**/dist",
+            "**/dist/**",
+            "**/build",
+            "**/build/**",
+            "**/coverage",
+            "**/coverage/**",
+            "**/.next",
+            "**/.next/**",
+            "**/.cache",
+            "**/.cache/**",
+            "**/infra-docs",
+            "**/infra-docs/**",
+            "**/secrets",
+            "**/secrets/**",
+            "**/.env",
+            "**/.env.*"
+          ],
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "maxFileSizeBytes": {
+          "default": 1048576,
+          "type": "integer",
+          "minimum": 1024,
+          "maximum": 52428800
+        },
+        "maxDepth": {
+          "default": 12,
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 40
+        },
+        "maxFiles": {
+          "default": 5000,
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50000
+        }
+      },
+      "additionalProperties": false
+    },
+    "output": {
+      "default": {
+        "directory": "./infra-docs"
+      },
+      "type": "object",
+      "properties": {
+        "directory": {
+          "default": "./infra-docs",
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "decisions": {
+      "default": {
+        "directory": "./infra-decisions"
+      },
+      "type": "object",
+      "properties": {
+        "directory": {
+          "default": "./infra-decisions",
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "backups": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "volume": {
+            "type": "string",
+            "minLength": 1
+          },
+          "policy": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": ["volume", "policy"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
