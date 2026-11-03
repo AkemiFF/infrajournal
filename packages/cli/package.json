@@ -1,0 +1,42 @@
+{
+  "name": "infrajournal",
+  "version": "0.1.0",
+  "description": "Turn Docker Compose, Nginx and Caddy configurations into documentation, architecture maps and drift reports.",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "infrajournal": "./dist/index.js"
+  },
+  "main": "./dist/index.js",
+  "files": [
+    "dist",
+    "web-dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "build": "tsup && node scripts/copy-web.mjs",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepack": "pnpm build"
+  },
+  "dependencies": {
+    "minimatch": "^11.0.4",
+    "yaml": "^2.9.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@infrajournal/core": "workspace:*",
+    "@infrajournal/documentation": "workspace:*",
+    "@types/node": "^26.6.6",
+    "commander": "^15.0.0",
+    "picocolors": "^1.1.1",
+    "tsup": "^9.0.0",
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.5"
+  }
+}
