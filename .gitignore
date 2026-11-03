@@ -1,0 +1,21 @@
+node_modules/
+dist/
+*.d.ts.map
+packages/cli/web-dist/
+packages/cli/README.md
+packages/cli/LICENSE
+coverage/
+*.tsbuildinfo
+.DS_Store
+.env
+.env.*
+!.env.example
+
+# Generated output used during local demos and tests
+apps/web/public/snapshot.json
+examples/**/infra-docs/
+examples/**/infra-decisions/*.local.yml
+
+# Local screenshots
+screenshots/*.png
+localdetails
