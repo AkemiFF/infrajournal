@@ -1,0 +1,28 @@
+name: Feature request
+description: Propose a narrowly scoped improvement to InfraJournal.
+title: "feature: "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem to solve
+      description: Explain the use case without production-sensitive examples.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: Include the expected inputs and outputs.
+    validations:
+      required: true
+  - type: textarea
+    id: boundaries
+    attributes:
+      label: Parser and security boundaries
+      description: Which constructs should be supported? Which must remain unsupported?
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered

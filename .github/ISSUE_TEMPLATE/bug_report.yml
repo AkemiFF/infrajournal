@@ -1,0 +1,50 @@
+name: Bug report
+description: Report incorrect scanning, generation, drift, or dashboard behavior.
+title: "bug: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: >
+        Do not include production secrets, environment values, private keys, or
+        unredacted snapshots. Report security vulnerabilities privately as
+        described in SECURITY.md, not in a public issue.
+  - type: input
+    id: version
+    attributes:
+      label: InfraJournal version / commit
+      placeholder: "0.1.0 source checkout, commit ..."
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Node.js, OS, and install method
+      placeholder: "Node 22.12, Windows 11, built from source"
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: Use a sanitized config snippet; include the exact command and flags.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior and exit code
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Sanitized diagnostics or output
+      render: text
+      description: Remove topology and sensitive data before pasting.
