@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
-import fixture from "../../../examples/multi-service/infra-docs/snapshot.json";
+import fixture from "./test/fixtures/snapshot.base.json";
 import type { Snapshot } from "@infrajournal/core";
 import { App } from "./main";
 
