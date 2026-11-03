@@ -1,0 +1,8 @@
+notes.example.test {
+	encode zstd gzip
+	reverse_proxy app:3000
+}
+
+api.notes.example.test {
+	reverse_proxy /api/* app:3000
+}

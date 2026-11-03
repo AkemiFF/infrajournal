@@ -1,0 +1,13 @@
+version: 1
+
+project:
+  name: caddy-stack
+
+scan:
+  root: .
+  include:
+    - "compose.yml"
+    - "Caddyfile"
+
+output:
+  directory: ./infra-docs

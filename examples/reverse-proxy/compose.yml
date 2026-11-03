@@ -1,0 +1,57 @@
+services:
+  caddy:
+    image: caddy:2.9-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    networks:
+      - edge
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      - app
+
+  app:
+    image: ghcr.io/example/notes-app:2.1.0
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgres://notes:secret@db:5432/notes
+      REDIS_URL: redis://cache:6379/0
+    networks:
+      - edge
+      - internal
+    depends_on:
+      - db
+      - cache
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: notes
+      POSTGRES_USER: notes
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    networks:
+      - internal
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  cache:
+    image: redis:7-alpine
+    networks:
+      - internal
+    volumes:
+      - cache:/data
+
+networks:
+  edge:
+  internal:
+
+volumes:
+  pgdata:
+  cache:
+  caddy-data:
+  caddy-config:
