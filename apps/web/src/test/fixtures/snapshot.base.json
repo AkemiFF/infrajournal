@@ -1,0 +1,877 @@
+{
+  "decisions": [
+    {
+      "consequences": [
+        "Database backup and restore procedures are required.",
+        "The database must be upgraded on a planned maintenance cadence."
+      ],
+      "context": "Multiple application services need shared persistent data, and the worker performs concurrent writes while the web application serves requests.",
+      "date": "2026-10-12",
+      "decision": "Use PostgreSQL 16 as the application database and keep all application services on the private internal network.",
+      "id": "decision:adr-001",
+      "relatedServices": [
+        "service:journal-demo:postgres",
+        "service:journal-demo:web",
+        "service:journal-demo:worker"
+      ],
+      "source": {
+        "file": "infra-decisions/adr-001-postgresql.yml",
+        "line": 1
+      },
+      "status": "accepted",
+      "title": "PostgreSQL instead of SQLite",
+      "unresolvedRelatedServices": []
+    },
+    {
+      "consequences": [
+        "Nginx becomes the only service with public ports.",
+        "Certificate renewal must be monitored separately."
+      ],
+      "context": "The application needs public HTTP routing, but the database and cache must not be directly reachable from the internet.",
+      "date": "2026-10-14",
+      "decision": "Terminate TLS in Nginx on the edge network. Keep PostgreSQL, Redis and the worker on an internal network with no published ports.",
+      "id": "decision:adr-002",
+      "relatedServices": [
+        "service:journal-demo:nginx",
+        "service:journal-demo:postgres",
+        "service:journal-demo:redis",
+        "service:journal-demo:web"
+      ],
+      "source": {
+        "file": "infra-decisions/adr-002-reverse-proxy.yml",
+        "line": 1
+      },
+      "status": "accepted",
+      "title": "One public reverse proxy with two networks",
+      "unresolvedRelatedServices": []
+    },
+    {
+      "consequences": [
+        "Restore drills must be scheduled.",
+        "The uploads volume currently has no documented backup policy."
+      ],
+      "context": "Two services hold state that cannot be rebuilt from source: PostgreSQL and Redis. User uploads also need an explicit retention decision.",
+      "date": "2026-10-20",
+      "decision": "Run nightly PostgreSQL dumps and daily Redis snapshots. The uploads volume remains under review until an off-site replication job is added.",
+      "id": "decision:adr-003",
+      "relatedServices": [
+        "service:journal-demo:postgres",
+        "service:journal-demo:redis",
+        "service:journal-demo:web"
+      ],
+      "source": {
+        "file": "infra-decisions/adr-003-backups.yml",
+        "line": 1
+      },
+      "status": "accepted",
+      "title": "Documented backup policy for stateful services",
+      "unresolvedRelatedServices": []
+    }
+  ],
+  "dependencies": [
+    {
+      "evidence": {
+        "kind": "explicit",
+        "source": {
+          "file": "compose.yml",
+          "line": 43
+        }
+      },
+      "from": "service:journal-demo:worker",
+      "id": "edge:CONNECTED_TO:227fb3e6da5ca440",
+      "to": "network:journal-demo:internal",
+      "type": "CONNECTED_TO"
+    },
+    {
+      "evidence": {
+        "kind": "explicit",
+        "source": {
+          "file": "compose.yml",
+          "line": 21
+        }
+      },
+      "from": "service:journal-demo:web",
+      "id": "edge:CONNECTED_TO:468ec1154b24a04e",
+      "to": "network:journal-demo:edge",
+      "type": "CONNECTED_TO"
+    },
+    {
+      "evidence": {
+        "kind": "explicit",
+        "source": {
+          "file": "compose.yml",
+          "line": 71
+        }
+      },
+      "from": "service:journal-demo:redis",
+      "id": "edge:CONNECTED_TO:769b1e2dd1307182",
+      "to": "network:journal-demo:internal",
+      "type": "CONNECTED_TO"
+    },
+    {
+      "evidence": {
+        "kind": "explicit",
+        "source": {
+          "file": "compose.yml",
+          "line": 56
+        }
+      },
+      "from": "service:journal-demo:postgres",
+      "id": "edge:CONNECTED_TO:7e7aea85cebb0ee8",
+      "to": "network:journal-demo:internal",
+      "type": "CONNECTED_TO"
+    },
+    {
+      "evidence": {
+        "kind": "explicit",
+        "source": {
+          "file": "compose.yml",
+          "line": 21
+        }
+      },
+      "from": "service:journal-demo:web",
+      "id": "edge:CONNECTED_TO:bbfca8647a26c997",
+      "to": "network:journal-demo:internal",
+      "type": "CONNECTED_TO"
+    },
+    {
+      "evidence": {
+        "kind": "explicit",
+        "source": {
+          "file": "compose.yml",
+          "line": 4
+        }
+      },
+      "from": "service:journal-demo:nginx",
+      "id": "edge:CONNECTED_TO:f42111a9b2da92ce",
+      "to": "network:journal-demo:edge",
+      "type": "CONNECTED_TO"
+    },
+    {
+      "evidence": {
+        "kind": "explicit",
+        "reason": "Declared in depends_on.",
+        "source": {
+          "file": "compose.yml",
+          "line": 4
+        }
+      },
+      "from": "service:journal-demo:nginx",
+      "id": "edge:DEPENDS_ON:11b3b15de72ec7e5",
+      "to": "service:journal-demo:web",
+      "type": "DEPENDS_ON"
+    },
+    {
+      "evidence": {
+        "kind": "explicit",
+        "reason": "Declared in depends_on.",
+        "source": {
+          "file": "compose.yml",
+          "line": 43
+        }
+      },
+      "from": "service:journal-demo:worker",
+      "id": "edge:DEPENDS_ON:298a70d280def034",
+      "to": "service:journal-demo:postgres",
+      "type": "DEPENDS_ON"
+    },
+    {
+      "evidence": {
+        "kind": "explicit",
+        "reason": "Declared in depends_on.",
+        "source": {
+          "file": "compose.yml",
+          "line": 43
+        }
+      },
+      "from": "service:journal-demo:worker",
+      "id": "edge:DEPENDS_ON:31158fd4a9819163",
+      "to": "service:journal-demo:redis",
+      "type": "DEPENDS_ON"
+    },
+    {
+      "evidence": {
+        "kind": "explicit",
+        "reason": "Declared in depends_on.",
+        "source": {
+          "file": "compose.yml",
+          "line": 21
+        }
+      },
+      "from": "service:journal-demo:web",
+      "id": "edge:DEPENDS_ON:6326ce07a2cca330",
+      "to": "service:journal-demo:postgres",
+      "type": "DEPENDS_ON"
+    },
+    {
+      "evidence": {
+        "kind": "explicit",
+        "reason": "Declared in depends_on.",
+        "source": {
+          "file": "compose.yml",
+          "line": 21
+        }
+      },
+      "from": "service:journal-demo:web",
+      "id": "edge:DEPENDS_ON:9dc766ab27a4ad41",
+      "to": "service:journal-demo:redis",
+      "type": "DEPENDS_ON"
+    },
+    {
+      "evidence": {
+        "kind": "explicit",
+        "reason": "Declared port mapping.",
+        "source": {
+          "file": "compose.yml",
+          "line": 4
+        }
+      },
+      "from": "service:journal-demo:nginx",
+      "id": "edge:EXPOSES:c596ce35bda48598",
+      "to": "endpoint:service:journal-demo:nginx:tcp-443",
+      "type": "EXPOSES"
+    },
+    {
+      "evidence": {
+        "kind": "explicit",
+        "reason": "Declared port mapping.",
+        "source": {
+          "file": "compose.yml",
+          "line": 4
+        }
+      },
+      "from": "service:journal-demo:nginx",
+      "id": "edge:EXPOSES:fe7e97b8c3eff445",
+      "to": "endpoint:service:journal-demo:nginx:tcp-80",
+      "type": "EXPOSES"
+    },
+    {
+      "evidence": {
+        "kind": "explicit",
+        "reason": "Named volume mount.",
+        "source": {
+          "file": "compose.yml",
+          "line": 21
+        }
+      },
+      "from": "service:journal-demo:web",
+      "id": "edge:MOUNTS:3ff06dc1f3cf2e4e",
+      "to": "volume:journal-demo:uploads",
+      "type": "MOUNTS"
+    },
+    {
+      "evidence": {
+        "kind": "explicit",
+        "reason": "Named volume mount.",
+        "source": {
+          "file": "compose.yml",
+          "line": 56
+        }
+      },
+      "from": "service:journal-demo:postgres",
+      "id": "edge:MOUNTS:4e9036793e68d245",
+      "to": "volume:journal-demo:pgdata",
+      "type": "MOUNTS"
+    },
+    {
+      "evidence": {
+        "kind": "explicit",
+        "reason": "Named volume mount.",
+        "source": {
+          "file": "compose.yml",
+          "line": 71
+        }
+      },
+      "from": "service:journal-demo:redis",
+      "id": "edge:MOUNTS:d09661bae7cdd79b",
+      "to": "volume:journal-demo:redisdata",
+      "type": "MOUNTS"
+    },
+    {
+      "evidence": {
+        "kind": "explicit",
+        "reason": "nginx proxy route for /.",
+        "source": {
+          "file": "nginx/conf.d/journal.conf",
+          "line": 17
+        }
+      },
+      "from": "domain:journal.example.com",
+      "id": "edge:ROUTES_TO:8103ed5b55ecae99",
+      "to": "service:journal-demo:web",
+      "type": "ROUTES_TO"
+    },
+    {
+      "evidence": {
+        "kind": "explicit",
+        "reason": "nginx proxy route for /.",
+        "source": {
+          "file": "nginx/conf.d/journal.conf",
+          "line": 17
+        }
+      },
+      "from": "domain:www.journal.example.com",
+      "id": "edge:ROUTES_TO:c7605d48303c583e",
+      "to": "service:journal-demo:web",
+      "type": "ROUTES_TO"
+    }
+  ],
+  "domains": [
+    {
+      "evidence": {
+        "kind": "explicit",
+        "reason": "Declared in nginx configuration."
+      },
+      "id": "domain:journal.example.com",
+      "kind": "domain",
+      "name": "journal.example.com",
+      "proxy": "nginx",
+      "routes": [
+        {
+          "path": "/",
+          "serviceId": "service:journal-demo:web",
+          "source": {
+            "file": "nginx/conf.d/journal.conf",
+            "line": 17
+          },
+          "upstream": "web:3000"
+        },
+        {
+          "path": "/api/",
+          "serviceId": "service:journal-demo:web",
+          "source": {
+            "file": "nginx/conf.d/journal.conf",
+            "line": 23
+          },
+          "upstream": "web:3000"
+        }
+      ],
+      "source": {
+        "file": "nginx/conf.d/journal.conf",
+        "line": 6
+      },
+      "tls": true
+    },
+    {
+      "evidence": {
+        "kind": "explicit",
+        "reason": "Declared in nginx configuration."
+      },
+      "id": "domain:www.journal.example.com",
+      "kind": "domain",
+      "name": "www.journal.example.com",
+      "proxy": "nginx",
+      "routes": [
+        {
+          "path": "/",
+          "serviceId": "service:journal-demo:web",
+          "source": {
+            "file": "nginx/conf.d/journal.conf",
+            "line": 17
+          },
+          "upstream": "web:3000"
+        },
+        {
+          "path": "/api/",
+          "serviceId": "service:journal-demo:web",
+          "source": {
+            "file": "nginx/conf.d/journal.conf",
+            "line": 23
+          },
+          "upstream": "web:3000"
+        }
+      ],
+      "source": {
+        "file": "nginx/conf.d/journal.conf",
+        "line": 6
+      },
+      "tls": true
+    }
+  ],
+  "endpoints": [
+    {
+      "id": "endpoint:service:journal-demo:nginx:tcp-443",
+      "kind": "endpoint",
+      "name": "nginx:443/tcp",
+      "port": "443",
+      "published": "443",
+      "serviceId": "service:journal-demo:nginx",
+      "source": {
+        "file": "compose.yml",
+        "line": 4
+      },
+      "transport": "tcp"
+    },
+    {
+      "id": "endpoint:service:journal-demo:nginx:tcp-80",
+      "kind": "endpoint",
+      "name": "nginx:80/tcp",
+      "port": "80",
+      "published": "80",
+      "serviceId": "service:journal-demo:nginx",
+      "source": {
+        "file": "compose.yml",
+        "line": 4
+      },
+      "transport": "tcp"
+    }
+  ],
+  "external": [],
+  "files": [
+    {
+      "bytes": 2279,
+      "kind": "compose",
+      "path": "compose.yml"
+    },
+    {
+      "bytes": 561,
+      "kind": "decision",
+      "path": "infra-decisions/adr-001-postgresql.yml"
+    },
+    {
+      "bytes": 560,
+      "kind": "decision",
+      "path": "infra-decisions/adr-002-reverse-proxy.yml"
+    },
+    {
+      "bytes": 577,
+      "kind": "decision",
+      "path": "infra-decisions/adr-003-backups.yml"
+    },
+    {
+      "bytes": 591,
+      "kind": "nginx",
+      "path": "nginx/conf.d/journal.conf"
+    }
+  ],
+  "graphNodes": [
+    {
+      "id": "domain:journal.example.com",
+      "kind": "domain",
+      "label": "journal.example.com",
+      "sublabel": "nginx · TLS"
+    },
+    {
+      "id": "domain:www.journal.example.com",
+      "kind": "domain",
+      "label": "www.journal.example.com",
+      "sublabel": "nginx · TLS"
+    },
+    {
+      "id": "endpoint:service:journal-demo:nginx:tcp-443",
+      "kind": "endpoint",
+      "label": "443/tcp",
+      "sublabel": "published 443"
+    },
+    {
+      "id": "endpoint:service:journal-demo:nginx:tcp-80",
+      "kind": "endpoint",
+      "label": "80/tcp",
+      "sublabel": "published 80"
+    },
+    {
+      "id": "network:journal-demo:edge",
+      "kind": "network",
+      "label": "edge",
+      "sublabel": "bridge network"
+    },
+    {
+      "id": "network:journal-demo:internal",
+      "kind": "network",
+      "label": "internal",
+      "sublabel": "bridge network"
+    },
+    {
+      "id": "service:journal-demo:nginx",
+      "kind": "service",
+      "label": "nginx",
+      "sublabel": "nginx:1.27-alpine"
+    },
+    {
+      "id": "service:journal-demo:postgres",
+      "kind": "service",
+      "label": "postgres",
+      "sublabel": "postgres:16-alpine"
+    },
+    {
+      "id": "service:journal-demo:redis",
+      "kind": "service",
+      "label": "redis",
+      "sublabel": "redis:7-alpine"
+    },
+    {
+      "id": "service:journal-demo:web",
+      "kind": "service",
+      "label": "web",
+      "sublabel": "ghcr.io/example/journal-web:1.4.2"
+    },
+    {
+      "id": "service:journal-demo:worker",
+      "kind": "service",
+      "label": "worker",
+      "sublabel": "ghcr.io/example/journal-web:1.4.2"
+    },
+    {
+      "id": "volume:journal-demo:pgdata",
+      "kind": "volume",
+      "label": "pgdata",
+      "sublabel": "named volume"
+    },
+    {
+      "id": "volume:journal-demo:redisdata",
+      "kind": "volume",
+      "label": "redisdata",
+      "sublabel": "named volume"
+    },
+    {
+      "id": "volume:journal-demo:uploads",
+      "kind": "volume",
+      "label": "uploads",
+      "sublabel": "named volume"
+    }
+  ],
+  "metadata": {
+    "contentHash": "5073ee41e59861550732c2dfc27bc4abf12abe5d5d8d64a6fdd123dd5603e25e",
+    "generatedAt": "2026-11-03T12:00:00.000Z",
+    "generator": "InfraJournal",
+    "generatorVersion": "0.1.0"
+  },
+  "networks": [
+    {
+      "composeProject": "journal-demo",
+      "driver": "bridge",
+      "evidence": {
+        "kind": "explicit",
+        "reason": "Declared in Docker Compose."
+      },
+      "external": false,
+      "id": "network:journal-demo:edge",
+      "implicit": false,
+      "kind": "network",
+      "name": "edge",
+      "source": {
+        "file": "compose.yml",
+        "line": 84
+      }
+    },
+    {
+      "composeProject": "journal-demo",
+      "driver": "bridge",
+      "evidence": {
+        "kind": "explicit",
+        "reason": "Declared in Docker Compose."
+      },
+      "external": false,
+      "id": "network:journal-demo:internal",
+      "implicit": false,
+      "kind": "network",
+      "name": "internal",
+      "source": {
+        "file": "compose.yml",
+        "line": 86
+      }
+    }
+  ],
+  "project": {
+    "composeProjects": ["journal-demo"],
+    "id": "project:journal-demo",
+    "name": "journal-demo"
+  },
+  "schemaVersion": "1.0.0",
+  "services": [
+    {
+      "composeProject": "journal-demo",
+      "dependsOn": ["service:journal-demo:web"],
+      "envFiles": [],
+      "environmentKeys": [],
+      "evidence": {
+        "kind": "explicit",
+        "reason": "Declared in Docker Compose."
+      },
+      "healthcheck": true,
+      "id": "service:journal-demo:nginx",
+      "image": "nginx:1.27-alpine",
+      "kind": "service",
+      "labelKeys": [],
+      "mounts": [
+        {
+          "readOnly": true,
+          "source": "./nginx/certs",
+          "sourceLocation": {
+            "file": "compose.yml",
+            "line": 4
+          },
+          "target": "/etc/nginx/certs",
+          "type": "bind"
+        },
+        {
+          "readOnly": true,
+          "source": "./nginx/conf.d",
+          "sourceLocation": {
+            "file": "compose.yml",
+            "line": 4
+          },
+          "target": "/etc/nginx/conf.d",
+          "type": "bind"
+        }
+      ],
+      "name": "nginx",
+      "networkIds": ["network:journal-demo:edge"],
+      "ports": [
+        {
+          "protocol": "tcp",
+          "published": "80",
+          "source": {
+            "file": "compose.yml",
+            "line": 4
+          },
+          "target": "80"
+        },
+        {
+          "protocol": "tcp",
+          "published": "443",
+          "source": {
+            "file": "compose.yml",
+            "line": 4
+          },
+          "target": "443"
+        }
+      ],
+      "restart": "unless-stopped",
+      "source": {
+        "file": "compose.yml",
+        "line": 4
+      }
+    },
+    {
+      "composeProject": "journal-demo",
+      "dependsOn": [],
+      "envFiles": [],
+      "environmentKeys": ["POSTGRES_DB", "POSTGRES_PASSWORD", "POSTGRES_USER"],
+      "evidence": {
+        "kind": "explicit",
+        "reason": "Declared in Docker Compose."
+      },
+      "healthcheck": true,
+      "id": "service:journal-demo:postgres",
+      "image": "postgres:16-alpine",
+      "kind": "service",
+      "labelKeys": [],
+      "mounts": [
+        {
+          "readOnly": false,
+          "source": "pgdata",
+          "sourceLocation": {
+            "file": "compose.yml",
+            "line": 56
+          },
+          "target": "/var/lib/postgresql/data",
+          "type": "named",
+          "volumeId": "volume:journal-demo:pgdata"
+        }
+      ],
+      "name": "postgres",
+      "networkIds": ["network:journal-demo:internal"],
+      "ports": [],
+      "restart": "unless-stopped",
+      "source": {
+        "file": "compose.yml",
+        "line": 56
+      }
+    },
+    {
+      "composeProject": "journal-demo",
+      "dependsOn": [],
+      "envFiles": [],
+      "environmentKeys": [],
+      "evidence": {
+        "kind": "explicit",
+        "reason": "Declared in Docker Compose."
+      },
+      "healthcheck": true,
+      "id": "service:journal-demo:redis",
+      "image": "redis:7-alpine",
+      "kind": "service",
+      "labelKeys": [],
+      "mounts": [
+        {
+          "readOnly": false,
+          "source": "redisdata",
+          "sourceLocation": {
+            "file": "compose.yml",
+            "line": 71
+          },
+          "target": "/data",
+          "type": "named",
+          "volumeId": "volume:journal-demo:redisdata"
+        }
+      ],
+      "name": "redis",
+      "networkIds": ["network:journal-demo:internal"],
+      "ports": [],
+      "restart": "unless-stopped",
+      "source": {
+        "file": "compose.yml",
+        "line": 71
+      }
+    },
+    {
+      "composeProject": "journal-demo",
+      "dependsOn": ["service:journal-demo:postgres", "service:journal-demo:redis"],
+      "envFiles": [],
+      "environmentKeys": ["DATABASE_URL", "PUBLIC_ORIGIN", "REDIS_URL", "SESSION_SECRET"],
+      "evidence": {
+        "kind": "explicit",
+        "reason": "Declared in Docker Compose."
+      },
+      "healthcheck": true,
+      "id": "service:journal-demo:web",
+      "image": "ghcr.io/example/journal-web:1.4.2",
+      "kind": "service",
+      "labelKeys": [],
+      "mounts": [
+        {
+          "readOnly": false,
+          "source": "uploads",
+          "sourceLocation": {
+            "file": "compose.yml",
+            "line": 21
+          },
+          "target": "/app/uploads",
+          "type": "named",
+          "volumeId": "volume:journal-demo:uploads"
+        }
+      ],
+      "name": "web",
+      "networkIds": ["network:journal-demo:edge", "network:journal-demo:internal"],
+      "ports": [],
+      "restart": "unless-stopped",
+      "source": {
+        "file": "compose.yml",
+        "line": 21
+      }
+    },
+    {
+      "composeProject": "journal-demo",
+      "dependsOn": ["service:journal-demo:postgres", "service:journal-demo:redis"],
+      "envFiles": [],
+      "environmentKeys": ["DATABASE_URL", "REDIS_URL"],
+      "evidence": {
+        "kind": "explicit",
+        "reason": "Declared in Docker Compose."
+      },
+      "healthcheck": false,
+      "id": "service:journal-demo:worker",
+      "image": "ghcr.io/example/journal-web:1.4.2",
+      "kind": "service",
+      "labelKeys": [],
+      "mounts": [],
+      "name": "worker",
+      "networkIds": ["network:journal-demo:internal"],
+      "ports": [],
+      "restart": "unless-stopped",
+      "source": {
+        "file": "compose.yml",
+        "line": 43
+      }
+    }
+  ],
+  "stats": {
+    "dependencies": 18,
+    "domains": 2,
+    "endpoints": 2,
+    "files": 5,
+    "networks": 2,
+    "services": 5,
+    "volumes": 3,
+    "warnings": {
+      "error": 0,
+      "info": 2,
+      "warning": 0
+    }
+  },
+  "volumes": [
+    {
+      "backup": {
+        "policy": "Nightly pg_dump encrypted and copied off-site; restore drill quarterly.",
+        "source": "config"
+      },
+      "composeProject": "journal-demo",
+      "evidence": {
+        "kind": "explicit",
+        "reason": "Declared in Docker Compose."
+      },
+      "external": false,
+      "id": "volume:journal-demo:pgdata",
+      "implicit": false,
+      "kind": "volume",
+      "name": "pgdata",
+      "source": {
+        "file": "compose.yml",
+        "line": 90
+      }
+    },
+    {
+      "backup": {
+        "policy": "Daily append-only file snapshot retained for seven days.",
+        "source": "config"
+      },
+      "composeProject": "journal-demo",
+      "evidence": {
+        "kind": "explicit",
+        "reason": "Declared in Docker Compose."
+      },
+      "external": false,
+      "id": "volume:journal-demo:redisdata",
+      "implicit": false,
+      "kind": "volume",
+      "name": "redisdata",
+      "source": {
+        "file": "compose.yml",
+        "line": 93
+      }
+    },
+    {
+      "composeProject": "journal-demo",
+      "evidence": {
+        "kind": "explicit",
+        "reason": "Declared in Docker Compose."
+      },
+      "external": false,
+      "id": "volume:journal-demo:uploads",
+      "implicit": false,
+      "kind": "volume",
+      "name": "uploads",
+      "source": {
+        "file": "compose.yml",
+        "line": 96
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "code": "IJ008",
+      "id": "warning:IJ008:01d90c7da532",
+      "message": "Service \"nginx\" publishes host ports (80->80/tcp, 443->443/tcp). Confirm this exposure is intentional and firewalled.",
+      "related": ["service:journal-demo:nginx"],
+      "severity": "INFO",
+      "source": {
+        "file": "compose.yml",
+        "line": 4
+      },
+      "suggestion": "Bind to 127.0.0.1 when a host port is only needed locally."
+    },
+    {
+      "code": "IJ009",
+      "id": "warning:IJ009:586c5cecc71e",
+      "message": "Named volume \"uploads\" has no documented backup policy. This does not prove that no backup exists.",
+      "related": ["volume:journal-demo:uploads"],
+      "severity": "INFO",
+      "source": {
+        "file": "compose.yml",
+        "line": 96
+      },
+      "suggestion": "Add a backups entry in infrajournal.yml or an infrajournal.backup label on the volume."
+    }
+  ]
+}
