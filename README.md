@@ -35,7 +35,7 @@ assumed.
 Available in the core scanner today:
 
 - **Docker Compose inventory** — services, images and builds, ports, named and
-  bind mounts, networks, `depends_on`, healthchecks, environment *key names*,
+  bind mounts, networks, `depends_on`, healthchecks, environment _key names_,
   `env_file` references and labels.
 - **Nginx subset** — `server` blocks, literal `server_name`s, `location` paths,
   `proxy_pass`, `upstream` blocks, TLS presence.
@@ -66,20 +66,15 @@ Shipped in 0.1.0:
 required.
 
 ```bash
-git clone <repository-url> infrajournal
-cd infrajournal
+# In an existing checkout of this repository:
 corepack enable
 pnpm install
 pnpm build
 node packages/cli/dist/index.js --version
 ```
 
-To put the command on your `PATH` while working from source:
-
-```bash
-pnpm --filter infrajournal link --global
-infrajournal --version
-```
+Commands below use `infrajournal` as shorthand for the source-built
+`node packages/cli/dist/index.js` unless noted otherwise.
 
 **From npm (intended after the first publish).** The package is **not yet
 published**. Once it is, the intended installation is:
@@ -112,13 +107,13 @@ node ../../packages/cli/dist/index.js check
 node ../../packages/cli/dist/index.js ui
 ```
 
-Expected from the current core scanner: 5 services, 2 networks, 3 volumes,
-2 domains, 18 dependency edges and 4 informational findings (Nginx publishes
-host ports; the three named volumes have no documented backup policy). The scan is
+The scan reports the services and routes it discovers and flags the published
+Nginx ports and the `uploads` volume's undocumented backup policy. The
+`pgdata` and `redisdata` backup policies are documented in this example's
+`infrajournal.yml`; a warning does **not** mean a backup is absent. The scan is
 read-only.
 
-With a global install, replace `node ../../packages/cli/dist/index.js` with
-`infrajournal`.
+See [getting started](docs/getting-started.md) for the full source-built workflow.
 
 ## CLI examples
 
@@ -132,21 +127,9 @@ infrajournal scan
 infrajournal scan --format json | jq '.stats'
 ```
 
-Expected JSON shape (a real excerpt of the multi-service result, reduced with
-`jq`; keys are shown in canonical order):
-
-```json
-{
-  "dependencies": 18,
-  "domains": 2,
-  "endpoints": 2,
-  "files": 5,
-  "networks": 2,
-  "services": 5,
-  "volumes": 3,
-  "warnings": { "error": 0, "info": 4, "warning": 0 }
-}
-```
+The JSON has `schemaVersion`, `project`, resource arrays, `warnings`, `stats`
+and `metadata` fields; `stats` contains counts from **this** scan, not fixed
+sample metrics. Pipe it to `jq '.stats'` to inspect them.
 
 `scan --format json` emits the snapshot object described in
 [docs/architecture.md](docs/architecture.md). It never writes files unless
@@ -175,9 +158,10 @@ missing baseline exits `4`; configuration/usage errors exit `2`; unexpected
 runtime failures exit `1`. `check` never rewrites the baseline.
 
 ```bash
-# Refresh the baseline deliberately, then review it like any other change.
-infrajournal generate
-infrajournal check --format json | jq '.summary'
+# After editing a supported config, inspect drift before refreshing the baseline.
+infrajournal check --format json > drift.json
+# Drift returns 3, so do not pipe directly to another command without
+# accounting for that exit code. Review drift.json, then run generate if intended.
 ```
 
 ### Start the local dashboard
@@ -193,20 +177,19 @@ error. The dashboard requires a built web bundle (`pnpm build`).
 
 ## Dashboard preview
 
-There is no checked-in screenshot yet. Run `infrajournal ui` against
-`examples/multi-service` and open the printed localhost URL to view the graph,
-resource tables and warnings. A real screenshot may be added under
-`docs/assets/` after the dashboard build is integrated; this README does not
-include fabricated imagery.
+There is no checked-in screenshot yet. Run the source-built `ui` command in
+`examples/multi-service` and open the printed localhost URL to view the
+dashboard. Screenshot placeholder: capture and review a **real** dashboard
+image before adding one to `docs/assets/`.
 
 ## Supported configuration
 
-| Input | Detected by default | Supported subset |
-| --- | --- | --- |
+| Input          | Detected by default                                                        | Supported subset                                                                                                                       |
+| -------------- | -------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
 | Docker Compose | `compose.yml`, `compose.yaml`, `docker-compose.yml`, `docker-compose.yaml` | Single-file Compose services, ports, volumes, networks, `depends_on`, healthcheck, restart, environment keys, `env_file` paths, labels |
-| Nginx | `**/nginx/*.conf`, `**/nginx/**/*.conf` | `server`, literal `server_name`, `location`, literal `proxy_pass`, `upstream`, TLS presence |
-| Caddy | `Caddyfile`, `Caddyfile.*` | Site addresses, `reverse_proxy`, basic path matchers, `handle`/`handle_path`, TLS presence |
-| Decisions | `*.yml` / `*.yaml` under `decisions.directory` | `id`, `title`, `status`, `date`, `context`, `decision`, `consequences`, `related_services` |
+| Nginx          | `**/nginx/*.conf`, `**/nginx/**/*.conf`                                    | `server`, literal `server_name`, `location`, literal `proxy_pass`, `upstream`, TLS presence                                            |
+| Caddy          | `Caddyfile`, `Caddyfile.*`                                                 | Site addresses, `reverse_proxy`, basic path matchers, `handle`/`handle_path`, TLS presence                                             |
+| Decisions      | `*.yml` / `*.yaml` under `decisions.directory`                             | `id`, `title`, `status`, `date`, `context`, `decision`, `consequences`, `related_services`                                             |
 
 Add paths in `scan.include` if your files use other locations. Include patterns
 and exclusion semantics are documented in
@@ -215,17 +198,17 @@ reported as a warning where the parser can recognize it, and ignored otherwise.
 
 ## Limitations
 
-| Area | Limitation |
-| --- | --- |
-| Compose | No interpolation, variable resolution, multi-file merging, `include`, `extends` resolution, profiles, `configs`, or `secrets` contents. |
-| Compose | `network_mode` is reported but not modeled; unknown fields are ignored. |
-| Nginx | `include` is not followed, `map` is not evaluated, variables are not resolved, `if` conditions and regex locations are not evaluated. |
-| Caddy | `import` is not followed; plugins and directives outside the documented subset are not interpreted. Placeholders and Unix sockets are skipped. |
-| Inference | Environment-key inference is a heuristic based on key names and unique matches. It is not proof of a runtime dependency. |
-| TLS | TLS is recorded only when configuration declares it. Certificates are never validated. |
-| Runtime | No Docker daemon, container state, DNS, firewall or cloud resources are inspected. |
-| Backups | A missing backup policy is a documentation finding, not proof that no backup exists. |
-| Security | Redaction is best-effort. Generated snapshots can still contain sensitive topology, image names and decision text; review before publishing. |
+| Area      | Limitation                                                                                                                                     |
+| --------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| Compose   | No interpolation, variable resolution, multi-file merging, `include`, `extends` resolution, profiles, `configs`, or `secrets` contents.        |
+| Compose   | `network_mode` is reported but not modeled; unknown fields are ignored.                                                                        |
+| Nginx     | `include` is not followed, `map` is not evaluated, variables are not resolved, `if` conditions and regex locations are not evaluated.          |
+| Caddy     | `import` is not followed; plugins and directives outside the documented subset are not interpreted. Placeholders and Unix sockets are skipped. |
+| Inference | Environment-key inference is a heuristic based on key names and unique matches. It is not proof of a runtime dependency.                       |
+| TLS       | TLS is recorded only when configuration declares it. Certificates are never validated.                                                         |
+| Runtime   | No Docker daemon, container state, DNS, firewall or cloud resources are inspected.                                                             |
+| Backups   | A missing backup policy is a documentation finding, not proof that no backup exists.                                                           |
+| Security  | Redaction is best-effort. Generated snapshots can still contain sensitive topology, image names and decision text; review before publishing.   |
 
 Full details and residual risks: [docs/limitations.md](docs/limitations.md).
 
@@ -267,20 +250,20 @@ threat model and reporting process.
 
 ## Roadmap
 
-**Shipped (0.1.0 core)**
+**Shipped in this checkout (0.1.0 unreleased)**
 
 - Schema-versioned snapshot and config contracts.
 - Deterministic Compose, Nginx and Caddy scanning.
 - Stable graph, evidence, diagnostics and decision records.
 - Example stacks and source-level validation.
+- Source-built `init`, `scan`, `generate`, `check` and `ui` commands,
+  Markdown generation, JSON baselines and drift reports.
 
-**P0 — first release**
+**P0 — before first public release**
 
-- `init`, `scan`, `generate`, `check`, `ui` CLI commands.
-- Markdown generator and baseline `snapshot.json`.
-- Drift report with exit codes 0/1/2/3/4.
-- Localhost-only dashboard.
-- Packaged CLI with bundled web assets.
+- Complete final QA, packaging verification and release checklist.
+- Replace placeholder community/security contact addresses.
+- Publish npm package and tag release only after maintainer approval.
 
 **P1 — next (candidates, not committed)**
 
@@ -310,20 +293,3 @@ security issues privately as described in [SECURITY.md](SECURITY.md).
 ## License
 
 MIT. See [LICENSE](LICENSE).
-
----
-
-**Project status**
-
-| Area | State in this checkout |
-| --- | --- |
-| Core scanner, parsers, graph, diagnostics, decisions, snapshot | Implemented |
-| Examples | Implemented and validated against the core scanner |
-| CLI (`init`, `scan`, `generate`, `check`, `ui`) | Interface documented; integration in progress |
-| Markdown generator and drift engine | Contract documented; implementation in progress |
-| Dashboard | Implemented; run `pnpm build` then `infrajournal ui` |
-| npm package | Not published; install from source |
-
-When the CLI and generator integration lands, the commands in this README
-become directly runnable. Until then, the core scanner can be exercised from
-the workspace tests and the examples.
