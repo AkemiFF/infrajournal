@@ -1,0 +1,31 @@
+name: Release candidate (manual)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  candidate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12.11.2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm test
+      - run: pnpm build
+      - run: mkdir -p release-artifacts && npm pack ./packages/cli --pack-destination release-artifacts
+      - uses: actions/upload-artifact@v4
+        with:
+          name: infrajournal-release-candidate
+          path: release-artifacts/*.tgz
+          if-no-files-found: error
