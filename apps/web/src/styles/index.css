@@ -1,0 +1,473 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-canvas: var(--ij-canvas);
+  --color-canvas-2: var(--ij-canvas-2);
+  --color-surface: var(--ij-surface);
+  --color-elevated: var(--ij-elevated);
+  --color-ink: var(--ij-ink);
+  --color-muted: var(--ij-muted);
+  --color-faint: var(--ij-faint);
+  --color-line: var(--ij-line);
+  --color-line-strong: var(--ij-line-strong);
+  --color-accent: var(--ij-accent);
+  --color-accent-strong: var(--ij-accent-strong);
+  --color-accent-ink: var(--ij-accent-ink);
+  --color-good: var(--ij-good);
+  --color-warn: var(--ij-warn);
+  --color-bad: var(--ij-bad);
+  --color-info: var(--ij-info);
+  --color-rose: var(--ij-rose);
+  --font-sans: var(--ij-font-sans);
+  --font-mono: var(--ij-font-mono);
+}
+
+:root,
+html[data-theme="dark"] {
+  color-scheme: dark;
+
+  --ij-canvas: #070a0b;
+  --ij-canvas-2: #0a0f10;
+  --ij-surface: #0d1315;
+  --ij-elevated: #121a1c;
+  --ij-ink: #edf5f4;
+  --ij-muted: #9aacad;
+  --ij-faint: #6b8082;
+  --ij-line: #1d2c2f;
+  --ij-line-strong: #2d4144;
+  --ij-accent: #3ee6d0;
+  --ij-accent-strong: #77f6e5;
+  --ij-accent-ink: #032825;
+  --ij-good: #48d597;
+  --ij-warn: #f4b860;
+  --ij-bad: #f2777a;
+  --ij-info: #67b7f7;
+  --ij-rose: #f58bb0;
+  --ij-grid: rgba(62, 230, 208, 0.06);
+  --ij-glow: rgba(62, 230, 208, 0.16);
+  --ij-shadow: 0 24px 70px -38px rgba(0, 0, 0, 0.9);
+  --ij-sidebar: rgba(8, 12, 13, 0.9);
+  --ij-scrim: rgba(2, 5, 6, 0.66);
+  --ij-font-sans:
+    ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --ij-font-mono:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+}
+
+html[data-theme="light"] {
+  color-scheme: light;
+
+  --ij-canvas: #f3f7f5;
+  --ij-canvas-2: #eaf1ee;
+  --ij-surface: #ffffff;
+  --ij-elevated: #f7faf9;
+  --ij-ink: #0e1a18;
+  --ij-muted: #506562;
+  --ij-faint: #748784;
+  --ij-line: #dbe6e2;
+  --ij-line-strong: #bdcec9;
+  --ij-accent: #0d766e;
+  --ij-accent-strong: #085e57;
+  --ij-accent-ink: #f0fffc;
+  --ij-good: #10754d;
+  --ij-warn: #955800;
+  --ij-bad: #b4232b;
+  --ij-info: #1664a8;
+  --ij-rose: #ac3763;
+  --ij-grid: rgba(13, 118, 110, 0.08);
+  --ij-glow: rgba(13, 118, 110, 0.1);
+  --ij-shadow: 0 24px 70px -46px rgba(20, 45, 40, 0.4);
+  --ij-sidebar: rgba(250, 252, 251, 0.92);
+  --ij-scrim: rgba(16, 32, 29, 0.36);
+}
+
+* {
+  border-color: var(--ij-line);
+}
+
+html {
+  min-height: 100%;
+  background: var(--ij-canvas);
+  scrollbar-color: var(--ij-line-strong) var(--ij-canvas);
+}
+
+body {
+  min-height: 100%;
+  margin: 0;
+  background: var(--ij-canvas);
+  color: var(--ij-ink);
+  font-family: var(--ij-font-sans);
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+::selection {
+  background: var(--ij-accent);
+  color: var(--ij-accent-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--ij-accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+button,
+a,
+input,
+select {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+/* Subtle app texture, without an image or external asset. */
+.app-backdrop {
+  background-image:
+    radial-gradient(ellipse 80% 55% at 12% -8%, var(--ij-glow), transparent 65%),
+    linear-gradient(to right, var(--ij-grid) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--ij-grid) 1px, transparent 1px);
+  background-size:
+    100% 100%,
+    52px 52px,
+    52px 52px;
+  background-position:
+    0 0,
+    center top,
+    center top;
+}
+
+.hero-grid {
+  background-image:
+    linear-gradient(to right, var(--ij-grid) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--ij-grid) 1px, transparent 1px);
+  background-size: 34px 34px;
+  mask-image: linear-gradient(to bottom, black, transparent 88%);
+}
+
+.panel {
+  background: var(--ij-surface);
+  border: 1px solid var(--ij-line);
+  border-radius: 1rem;
+  box-shadow: var(--ij-shadow);
+}
+
+.panel-soft {
+  background: var(--ij-elevated);
+  border: 1px solid var(--ij-line);
+  border-radius: 0.875rem;
+}
+
+.hairline {
+  border-color: var(--ij-line);
+}
+
+.mono {
+  font-family: var(--ij-font-mono);
+  font-variant-ligatures: none;
+}
+
+.eyebrow {
+  font-size: 0.6875rem;
+  font-weight: 650;
+  letter-spacing: 0.16em;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--ij-faint);
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+.skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 100;
+  transform: translateY(-160%);
+  border-radius: 0.5rem;
+  background: var(--ij-accent);
+  color: var(--ij-accent-ink);
+  padding: 0.625rem 0.875rem;
+  font-size: 0.8125rem;
+  font-weight: 650;
+  transition: transform 140ms ease;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--ij-elevated) 0%,
+    color-mix(in srgb, var(--ij-elevated) 60%, var(--ij-line-strong)) 50%,
+    var(--ij-elevated) 100%
+  );
+  background-size: 220% 100%;
+  animation: skeleton-pan 1.7s ease-in-out infinite;
+}
+
+@keyframes skeleton-pan {
+  0% {
+    background-position: 120% 0;
+  }
+  100% {
+    background-position: -120% 0;
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 var(--ij-glow);
+  }
+  70% {
+    box-shadow: 0 0 0 7px transparent;
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+.status-pulse {
+  animation: pulse-ring 2.4s ease-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---------- Graph ---------- */
+
+.graph-shell {
+  position: relative;
+  min-height: 420px;
+}
+
+.graph-shell .react-flow {
+  background:
+    radial-gradient(ellipse 70% 70% at 50% -10%, var(--ij-glow), transparent 65%), transparent;
+}
+
+.react-flow__attribution {
+  background: transparent !important;
+  color: var(--ij-faint) !important;
+  opacity: 0.75;
+}
+
+.react-flow__attribution a {
+  color: inherit !important;
+}
+
+.react-flow__controls {
+  overflow: hidden;
+  border: 1px solid var(--ij-line) !important;
+  border-radius: 0.65rem !important;
+  box-shadow: none !important;
+}
+
+.react-flow__controls-button {
+  width: 30px !important;
+  height: 30px !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--ij-line) !important;
+  background: var(--ij-surface) !important;
+  color: var(--ij-muted) !important;
+  fill: currentColor !important;
+}
+
+.react-flow__controls-button:last-child {
+  border-bottom: 0 !important;
+}
+
+.react-flow__controls-button:hover {
+  background: var(--ij-elevated) !important;
+  color: var(--ij-ink) !important;
+}
+
+.react-flow__controls-button svg {
+  fill: currentColor;
+}
+
+.react-flow__minimap {
+  overflow: hidden;
+  border: 1px solid var(--ij-line) !important;
+  border-radius: 0.7rem !important;
+  background: var(--ij-surface) !important;
+  box-shadow: none !important;
+}
+
+.react-flow__minimap-mask {
+  fill: var(--ij-canvas) !important;
+  fill-opacity: 0.68 !important;
+}
+
+.react-flow__edge-path {
+  transition:
+    opacity 160ms ease,
+    stroke 160ms ease;
+}
+
+.react-flow__edge-text {
+  font-family: var(--ij-font-mono);
+  font-size: 9px;
+  letter-spacing: 0.03em;
+}
+
+.react-flow__edge-textbg {
+  fill: var(--ij-surface) !important;
+}
+
+.react-flow__handle {
+  width: 7px;
+  height: 7px;
+  border: 1px solid var(--ij-line-strong);
+  background: var(--ij-elevated);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.flow-node {
+  position: relative;
+  display: flex;
+  width: 232px;
+  height: 76px;
+  align-items: center;
+  gap: 0.7rem;
+  border: 1px solid var(--ij-line-strong);
+  border-left: 3px solid var(--node-accent, var(--ij-accent));
+  border-radius: 0.7rem;
+  background: color-mix(in srgb, var(--ij-surface) 94%, transparent);
+  padding: 0.65rem 0.75rem;
+  box-shadow: 0 10px 24px -18px rgba(0, 0, 0, 0.8);
+  transition:
+    border-color 150ms ease,
+    background 150ms ease,
+    opacity 150ms ease,
+    transform 150ms ease;
+}
+
+html[data-theme="light"] .flow-node {
+  background: var(--ij-surface);
+}
+
+.flow-node[data-focus="selected"] {
+  border-color: var(--node-accent, var(--ij-accent));
+  background: color-mix(in srgb, var(--node-accent, var(--ij-accent)) 10%, var(--ij-surface));
+  box-shadow:
+    0 0 0 1px var(--node-accent, var(--ij-accent)),
+    0 16px 34px -22px rgba(0, 0, 0, 0.85);
+}
+
+.flow-node[data-focus="connected"] {
+  border-color: color-mix(in srgb, var(--node-accent, var(--ij-accent)) 55%, var(--ij-line-strong));
+}
+
+.flow-node[data-dimmed="true"] {
+  opacity: 0.28;
+}
+
+.flow-node[data-search-match="true"] {
+  outline: 2px solid var(--ij-accent);
+  outline-offset: 2px;
+}
+
+.flow-node:hover {
+  border-color: var(--node-accent, var(--ij-accent));
+}
+
+.flow-node-icon {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  flex: none;
+  place-items: center;
+  border-radius: 0.55rem;
+  background: color-mix(in srgb, var(--node-accent, var(--ij-accent)) 14%, transparent);
+  color: var(--node-accent, var(--ij-accent));
+}
+
+.flow-node-kind {
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--node-accent, var(--ij-accent));
+}
+
+.flow-node-label {
+  overflow: hidden;
+  max-width: 142px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.flow-node-sublabel {
+  overflow: hidden;
+  max-width: 142px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--ij-font-mono);
+  font-size: 0.625rem;
+  line-height: 1.35;
+  color: var(--ij-faint);
+}
+
+.flow-node-warning {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 2px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ij-warn) 14%, transparent);
+  padding: 2px 5px;
+  font-size: 0.5625rem;
+  font-weight: 700;
+  color: var(--ij-warn);
+}
+
+/* Scrollbars */
+* {
+  scrollbar-width: thin;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background: var(--ij-line-strong);
+  background-clip: content-box;
+}
