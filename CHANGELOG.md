@@ -7,8 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.0] - Unreleased
 
-The first release is not yet cut. Entries are added only as work lands; the CLI,
-documentation generator, drift command and dashboard are still being integrated.
+The first release is not yet cut. The package is not published to npm.
 
 ### Added
 
@@ -38,6 +37,8 @@ documentation generator, drift command and dashboard are still being integrated.
   paths and a SHA-256 content hash.
 - Three validated example stacks: `simple-stack`, `reverse-proxy` and
   `multi-service` with three ADRs.
+- Source-built CLI commands `init`, `scan`, `generate`, `check` and `ui`,
+  generated Markdown, JSON baselines, drift comparison and a local dashboard.
 - Documentation for configuration, CLI contract, limitations, architecture and
   release process.
 - Contributor Covenant 2.1 code of conduct, security policy, contribution guide
@@ -49,5 +50,3 @@ documentation generator, drift command and dashboard are still being integrated.
   bind-mounted host files are never read or stored.
 - Diagnostics and CLI errors pass through best-effort secret redaction.
 - Discovery refuses symlinks that resolve outside the scan root.
-
-[0.1.0]: https://github.com/OWNER/REPO/compare/v0.0.0...v0.1.0

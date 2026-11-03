@@ -13,10 +13,10 @@ should evaluate before using it.
 InfraJournal has not published a stable release yet. Security fixes target the
 current development line and, once releases exist, the latest minor release.
 
-| Version | Status | Notes |
-| --- | --- | --- |
-| `0.1.x` | Pre-release | Current development line. No stable support window yet. |
-| `< 0.1.0` | Unsupported | No released versions exist. |
+| Version   | Status      | Notes                                                   |
+| --------- | ----------- | ------------------------------------------------------- |
+| `0.1.x`   | Pre-release | Current development line. No stable support window yet. |
+| `< 0.1.0` | Unsupported | No released versions exist.                             |
 
 When `1.0.0` ships, this table will be updated with the supported minor versions
 and the end-of-support policy. Pre-release builds may change contracts without a
@@ -60,14 +60,14 @@ InfraJournal assumes:
 
 Security-relevant boundaries:
 
-| Boundary | Behavior |
-| --- | --- |
-| Scan root | Files are matched under the configured root. Symlinks that resolve outside the root are skipped with `IJ021`. |
-| Referenced content | `env_file` contents, Compose `secrets`, bind-mounted host files and certificates are not read. |
-| Execution | Scanned configuration is parsed, never executed. Docker is never invoked. |
-| Network | No telemetry, registry lookups, DNS resolution or outbound HTTP from the scanner. The dashboard binds localhost only. |
-| Output rendering | Generated Markdown escapes untrusted values; Mermaid labels are sanitized. |
-| Resource use | File size, depth and count limits bound discovery; decisions are capped separately. |
+| Boundary           | Behavior                                                                                                              |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------- |
+| Scan root          | Files are matched under the configured root. Symlinks that resolve outside the root are skipped with `IJ021`.         |
+| Referenced content | `env_file` contents, Compose `secrets`, bind-mounted host files and certificates are not read.                        |
+| Execution          | Scanned configuration is parsed, never executed. Docker is never invoked.                                             |
+| Network            | No telemetry, registry lookups, DNS resolution or outbound HTTP from the scanner. The dashboard binds localhost only. |
+| Output rendering   | Generated Markdown escapes untrusted values; Mermaid labels are sanitized.                                            |
+| Resource use       | File size, depth and count limits bound discovery; decisions are capped separately.                                   |
 
 ## What InfraJournal does and does not do
 
@@ -111,7 +111,9 @@ every possible input:
    documentation. Paths outside the scan root produce `IJ025`; none are opened.
 5. **Volume label values are not stored**, except the documented
    `infrajournal.backup` / `infrajournal.backup-policy` label used as a backup
-   policy. Other label names are retained; values are not.
+   policy. Other label names are retained; values are not. Backup policies
+   from labels or `backups[].policy` are written verbatim to the snapshot,
+   Markdown and dashboard: **never put credentials in policy text**.
 6. **Decision text is stored as written.** ADRs are documentation, not secret
    storage. Do not put credentials in an ADR.
 7. **Errors are redacted best-effort.** `redactSensitiveText` removes common
@@ -152,10 +154,13 @@ every possible input:
   environment files or a secret manager outside the scan root.
 - Review `infra-docs/`, `snapshot.json` and generated decision pages before
   committing or publishing them.
-- Use `scan.exclude` for secret directories and generated output. The scanner
-  automatically excludes the configured output and decisions directories from
-  input discovery, but explicit excludes add defense in depth.
+- Use `scan.exclude` for secret directories and generated output. Default globs
+  exclude `infra-docs`, `.env` files and `secrets` directories; if you customize
+  exclusions or output location, add explicit exclusions. Decision YAML files
+  are read separately from the configured decisions directory.
 - Keep the dashboard on localhost. Stop it when finished.
+- Snapshot and generated Markdown files default to owner-only permissions on
+  POSIX systems. Review permissions if you copy or publish them elsewhere.
 - Update dependencies deliberately and review lockfile diffs.
 
 ## Dependency and vulnerability handling

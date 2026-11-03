@@ -37,15 +37,15 @@ examples are designed to be readable offline.
 
 ## Workspace layout
 
-| Path | Package | Purpose |
-| --- | --- | --- |
-| `packages/core` | `@infrajournal/core` | Discovery, parsers, normalization, graph, diagnostics, decisions, snapshot serialization |
-| `packages/documentation` | `@infrajournal/documentation` | Markdown generation and snapshot drift comparison |
-| `packages/cli` | `infrajournal` | Commander CLI, local dashboard server, packaged binary |
-| `apps/web` | `@infrajournal/web` | Local React dashboard built with Vite |
-| `examples/` | — | Parser-validated example stacks |
-| `docs/` | — | User, architecture and release documentation |
-| `tests/` | — | Cross-package end-to-end tests |
+| Path                     | Package                       | Purpose                                                                                  |
+| ------------------------ | ----------------------------- | ---------------------------------------------------------------------------------------- |
+| `packages/core`          | `@infrajournal/core`          | Discovery, parsers, normalization, graph, diagnostics, decisions, snapshot serialization |
+| `packages/documentation` | `@infrajournal/documentation` | Markdown generation and snapshot drift comparison                                        |
+| `packages/cli`           | `infrajournal`                | Commander CLI, local dashboard server, packaged binary                                   |
+| `apps/web`               | `@infrajournal/web`           | Local React dashboard built with Vite                                                    |
+| `examples/`              | —                             | Parser-validated example stacks                                                          |
+| `docs/`                  | —                             | User, architecture and release documentation                                             |
+| `tests/`                 | —                             | Cross-package end-to-end tests                                                           |
 
 The dependency direction is deliberate: `core` has no dependency on
 `documentation`, the CLI or the web app. The CLI bundles the other packages at
