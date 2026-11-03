@@ -53,7 +53,7 @@ describe("CLI commands", () => {
   it("prints version and help", async () => {
     expect(await invoke("--version")).toMatchObject({
       code: 0,
-      out: expect.stringContaining("0.1.0"),
+      out: expect.stringContaining("0.1.1"),
     });
     expect(await invoke("--help")).toMatchObject({
       code: 0,

@@ -1,8 +1,17 @@
 {
   "name": "infrajournal",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Turn Docker Compose, Nginx and Caddy configurations into documentation, architecture maps and drift reports.",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AkemiFF/infrajournal.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://github.com/AkemiFF/infrajournal#readme",
+  "bugs": {
+    "url": "https://github.com/AkemiFF/infrajournal/issues"
+  },
   "type": "module",
   "bin": {
     "infrajournal": "./dist/index.js"

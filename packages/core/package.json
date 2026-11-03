@@ -1,6 +1,6 @@
 {
   "name": "@infrajournal/core",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Core scanning, parsing, normalization and graph engine for InfraJournal.",
   "license": "MIT",
   "type": "module",

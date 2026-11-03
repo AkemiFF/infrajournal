@@ -10,13 +10,13 @@ should evaluate before using it.
 
 ## Supported versions
 
-InfraJournal has not published a stable release yet. Security fixes target the
-current development line and, once releases exist, the latest minor release.
+InfraJournal 0.1.x is published as a pre-1.0 release. Security fixes target
+the latest available patch release.
 
-| Version   | Status      | Notes                                                   |
-| --------- | ----------- | ------------------------------------------------------- |
-| `0.1.x`   | Pre-release | Current development line. No stable support window yet. |
-| `< 0.1.0` | Unsupported | No released versions exist.                             |
+| Version   | Status      | Notes                                                  |
+| --------- | ----------- | ------------------------------------------------------ |
+| `0.1.x`   | Pre-1.0     | Latest patch receives fixes; no stable support window. |
+| `< 0.1.0` | Unsupported | Older versions are not supported.                      |
 
 When `1.0.0` ships, this table will be updated with the supported minor versions
 and the end-of-support policy. Pre-release builds may change contracts without a

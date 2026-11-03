@@ -33,7 +33,7 @@ import {
 import { buildSnapshot } from "../serialization/snapshot.js";
 import { isPathInside } from "../utils/paths.js";
 
-export const CORE_VERSION = "0.1.0";
+export const CORE_VERSION = "0.1.1";
 
 export interface ScanProjectOptions {
   /** Absolute, symlink-resolved scan root. */

@@ -1,5 +1,5 @@
 <p align="left">
-  <img src="docs/assets/logo.svg" alt="InfraJournal logo" width="96" height="96" />
+  <img src="https://raw.githubusercontent.com/AkemiFF/infrajournal/main/docs/assets/logo.svg" alt="InfraJournal logo" width="96" height="96" />
 </p>
 
 # InfraJournal
@@ -13,9 +13,10 @@ warnings and architecture decision records. It is local-first, deterministic
 and read-only by design. It does not need a Docker daemon, cloud credentials or
 network access.
 
-> **Project status (0.1.0, pre-release).** The scanner, CLI, Markdown
-> generator, drift command and local dashboard are implemented and exercised
-> against the bundled examples. The package has not been published to npm.
+> **Release status.** Version 0.1.0 was published to npm, but its global/npx
+> executable exits without running. This is fixed in the 0.1.1 release candidate;
+> install 0.1.1 after publication. Until then, run the built CLI directly with
+> `node packages/cli/dist/index.js` from a source checkout.
 
 ## The problem
 
@@ -76,8 +77,7 @@ node packages/cli/dist/index.js --version
 Commands below use `infrajournal` as shorthand for the source-built
 `node packages/cli/dist/index.js` unless noted otherwise.
 
-**From npm (intended after the first publish).** The package is **not yet
-published**. Once it is, the intended installation is:
+**From npm (after the 0.1.1 patch is published):**
 
 ```bash
 npm install --global infrajournal
@@ -250,7 +250,7 @@ threat model and reporting process.
 
 ## Roadmap
 
-**Shipped in this checkout (0.1.0 unreleased)**
+**Shipped in this checkout (0.1.1 release candidate)**
 
 - Schema-versioned snapshot and config contracts.
 - Deterministic Compose, Nginx and Caddy scanning.
@@ -259,11 +259,11 @@ threat model and reporting process.
 - Source-built `init`, `scan`, `generate`, `check` and `ui` commands,
   Markdown generation, JSON baselines and drift reports.
 
-**P0 — before first public release**
+**P0 — before the 0.1.1 patch release**
 
 - Complete final QA, packaging verification and release checklist.
 - Replace placeholder community/security contact addresses.
-- Publish npm package and tag release only after maintainer approval.
+- Publish the corrected npm package and tag only after maintainer approval.
 
 **P1 — next (candidates, not committed)**
 
