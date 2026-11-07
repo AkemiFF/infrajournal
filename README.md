@@ -178,9 +178,16 @@ when running from source.
 
 ## Dashboard preview
 
-There is no checked-in screenshot yet. Run `infrajournal ui --root
-examples/multi-service` and open the printed localhost URL to view the live
-dashboard. A real screenshot can be added once captured and reviewed.
+The local dashboard combines a searchable architecture map with source
+evidence, related warnings and service details:
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/AkemiFF/infrajournal/main/docs/assets/dashboard-architecture.png" alt="InfraJournal interactive architecture map showing services, endpoints, networks, volumes and source evidence" width="1200" />
+</p>
+
+This is a real capture generated from the bundled examples. Run
+`infrajournal ui --root examples/multi-service` to explore it locally; the
+dashboard binds to localhost and does not contact a remote service.
 
 ## Supported configuration
 
