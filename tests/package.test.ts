@@ -10,7 +10,7 @@ describe("publishable CLI package", () => {
     const packageManifest = JSON.parse(readFileSync("packages/cli/package.json", "utf8")) as {
       version: string;
     };
-    expect(packageManifest.version).toBe("0.1.1");
+    expect(packageManifest.version).toBe("0.1.2");
   });
 
   it("runs through an npm-style symlink instead of exiting silently", async () => {
@@ -24,7 +24,7 @@ describe("publishable CLI package", () => {
         encoding: "utf8",
         timeout: 10_000,
       });
-      expect(version.trim()).toBe("0.1.1");
+      expect(version.trim()).toBe("0.1.2");
     } finally {
       await fs.rm(directory, { recursive: true, force: true });
     }

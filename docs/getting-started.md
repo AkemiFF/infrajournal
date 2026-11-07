@@ -10,6 +10,9 @@ infrajournal --version
 npx infrajournal --help
 ```
 
+The next patch release, `0.1.2`, fixes a configuration-template issue in
+`infrajournal init`; use it when it becomes available.
+
 Scanning is read-only. `init`, `generate` and `scan --output` write files only
 when requested. Docker is not needed.
 

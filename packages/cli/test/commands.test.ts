@@ -53,7 +53,7 @@ describe("CLI commands", () => {
   it("prints version and help", async () => {
     expect(await invoke("--version")).toMatchObject({
       code: 0,
-      out: expect.stringContaining("0.1.1"),
+      out: expect.stringContaining("0.1.2"),
     });
     expect(await invoke("--help")).toMatchObject({
       code: 0,
@@ -122,6 +122,10 @@ describe("CLI commands", () => {
 
   it("does not overwrite configuration without --force", async () => {
     expect((await invoke("init")).code).toBe(0);
+    const generated = await fs.readFile("infrajournal.yml", "utf8");
+    expect(generated).toContain("project: {}\n");
+    const initialized = await invoke("scan");
+    expect(initialized.code).toBe(0);
     const first = await fs.readFile("infrajournal.yml", "utf8");
     expect((await invoke("init")).code).toBe(2);
     expect(await fs.readFile("infrajournal.yml", "utf8")).toBe(first);

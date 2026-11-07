@@ -164,8 +164,7 @@ async function commandInit(force: boolean): Promise<void> {
   }
   const content = `version: 1
 
-project:
-  # name: my-infrastructure
+project: {}
 
 scan:
   root: .
