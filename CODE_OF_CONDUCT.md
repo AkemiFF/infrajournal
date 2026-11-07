@@ -1,8 +1,6 @@
 # Contributor Covenant Code of Conduct
 
-> **Maintainer action:** replace `maintainers@example.com` with the real
-> maintainer contact address in the Enforcement section. This placeholder is
-> intentionally obvious and must not be shipped as the final contact.
+> Maintainer contact: `mirado.akemi@gmail.com`.
 
 ## Our Pledge
 
@@ -64,7 +62,7 @@ representative at an online or offline event.
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
 reported to the community leaders responsible for enforcement at
-**maintainers@example.com** (placeholder — replace before release).
+**mirado.akemi@gmail.com**
 
 All complaints will be reviewed and investigated promptly and fairly.
 

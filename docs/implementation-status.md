@@ -51,7 +51,7 @@ aspirations. Update it when a wave closes.
 | 3    | Integration: CLI ↔ core ↔ docs ↔ UI                                                  | Orchestrator   | Done          | Full build and example workflow verified                                       |
 | 4    | QA/security audit of integrated result                                               | QA agent       | Done          | `docs/audit-final.md`; original blockers addressed and re-reviewed             |
 | 4    | Research claim verification                                                          | Research agent | Done          | Snapshot drift scope clarified                                                 |
-| 5    | Fixes, final verification, release prep                                              | Orchestrator   | Done          | npm 0.1.1 package verified; docs refresh is the current maintenance task       |
+| 5    | Fixes, final verification, release prep                                              | Orchestrator   | Done          | npm 0.1.3 package verified; docs and release guidance current                  |
 
 ## P0 checklist
 
@@ -90,8 +90,8 @@ node packages/cli/dist/index.js ui --root examples/multi-service
 
 ## Known constraints
 
-- npm package `infrajournal@0.1.1` is published; `0.1.0` remains affected by a
-  silent npm executable bug and should not be recommended.
+- npm package `infrajournal@0.1.3` is published; `0.1.0` and `0.1.1` should not
+  be recommended for new installations.
 - The dashboard requires a web build; `pnpm build` produces it before the CLI
   copies `apps/web/dist` to `packages/cli/web-dist`.
 - The scanner never executes Docker or Compose interpolation.

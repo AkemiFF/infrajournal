@@ -3,7 +3,7 @@
 Demonstrates Caddyfile site parsing, a shared edge network, and inferred
 database/cache dependencies from environment variable names.
 
-Install `infrajournal@0.1.1` with `npm install --global infrajournal`, or use
+Install `infrajournal@0.1.3` with `npm install --global infrajournal`, or use
 `npx infrajournal` instead of `infrajournal` in the commands below.
 
 ```bash

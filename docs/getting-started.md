@@ -1,7 +1,7 @@
 # Getting started
 
 InfraJournal reads infrastructure configuration on disk; it does not run
-containers. Install the published `0.1.1` release with Node.js >=22.12:
+containers. Install the published `0.1.3` release with Node.js >=22.12:
 
 ```bash
 npm install --global infrajournal
@@ -9,9 +9,6 @@ infrajournal --version
 # Or run without a global installation:
 npx infrajournal --help
 ```
-
-The next patch release, `0.1.3`, fixes configuration-template issues in
-`infrajournal init`; use it when it becomes available.
 
 Scanning is read-only. `init`, `generate` and `scan --output` write files only
 when requested. Docker is not needed.

@@ -11,8 +11,8 @@ should evaluate before using it.
 ## Supported versions
 
 InfraJournal 0.1.x is published as a pre-1.0 release. Security fixes target
-the latest available patch release. Version `0.1.0` has a packaging defect that
-can make its npm executable exit silently; upgrade to `0.1.1`.
+the latest available patch release. Versions `0.1.0` and `0.1.1` should be
+upgraded to `0.1.3` for the latest packaging and init-template fixes.
 
 | Version   | Status      | Notes                                                  |
 | --------- | ----------- | ------------------------------------------------------ |
@@ -36,9 +36,8 @@ Preferred: use the repository's **Security → Report a vulnerability** flow
 - your operating system and Node.js version;
 - any suggested fix or mitigation.
 
-Fallback contact: `security@example.com` — **placeholder to be replaced with
-the maintainers' real security address before public release.** Do not send real
-credentials; redact them.
+Fallback contact: `mirado.akemi@gmail.com`. Do not send real credentials;
+redact them.
 
 We will acknowledge reports as capacity allows, investigate, and coordinate
 disclosure after a fix or mitigation is available. Please give us a reasonable

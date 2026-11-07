@@ -7,9 +7,8 @@ clean checkout and verify the version and registry account before any upload.
 
 - [ ] Review [implementation status](implementation-status.md), open audit
       findings, [limitations](limitations.md), and user-facing claims.
-- [ ] Replace `maintainers@example.com` in the Code of Conduct and
-      `security@example.com` in the security policy with working private
-      contacts. Enable and test the repository's private vulnerability report
+- [x] Set maintainer and security contacts. Enable and test the repository's
+      private vulnerability report
       flow; confirm links and issue templates point to the right repository.
 - [ ] Confirm `README.md`, `docs/`, CLI `--help` and examples match the built
       product. Capture an actual dashboard image before adding a screenshot.

@@ -5,7 +5,7 @@ Compose files use example image names, fake hosts and placeholder credentials;
 none of them is a deployable production stack. Environment variable **values**
 are never stored by InfraJournal — only their names appear in snapshots.
 
-Install the published CLI (Node.js >=22.12):
+Install the published CLI 0.1.3 (Node.js >=22.12):
 
 ```bash
 npm install --global infrajournal

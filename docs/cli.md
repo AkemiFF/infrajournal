@@ -1,6 +1,6 @@
 # CLI reference
 
-Install version `0.1.1` with `npm install --global infrajournal`, or run
+Install version `0.1.3` with `npm install --global infrajournal`, or run
 `npx infrajournal --help` without a global installation. From a built source
 checkout, substitute `node packages/cli/dist/index.js` for `infrajournal`
 when running from the repository root. `--help` lists current options;

@@ -3,7 +3,7 @@
 A two-service Compose stack used to demonstrate InfraJournal without a reverse
 proxy or decision records.
 
-From the repository root, install `infrajournal@0.1.1` using
+From the repository root, install `infrajournal@0.1.3` using
 `npm install --global infrajournal` (or prefix the commands below with `npx`).
 
 ```bash
