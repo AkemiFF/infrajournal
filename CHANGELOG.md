@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Make the `infrajournal init` template valid YAML by generating `project: {}`
   instead of a null `project` value.
+- Include `docker-compose.yml` and `docker-compose.yaml` in the generated
+  default scan patterns.
 
 ## [0.1.1] - 2026-11-03
 

@@ -1,6 +1,6 @@
 {
   "name": "infrajournal",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Turn Docker Compose, Nginx and Caddy configurations into documentation, architecture maps and drift reports.",
   "license": "MIT",
   "repository": {

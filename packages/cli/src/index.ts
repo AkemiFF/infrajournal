@@ -171,6 +171,8 @@ scan:
   include:
     - "**/compose.yml"
     - "**/compose.yaml"
+    - "**/docker-compose.yml"
+    - "**/docker-compose.yaml"
     - "**/Caddyfile"
     - "**/nginx/**/*.conf"
   exclude:

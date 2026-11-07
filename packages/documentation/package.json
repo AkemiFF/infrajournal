@@ -1,6 +1,6 @@
 {
   "name": "@infrajournal/documentation",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Markdown documentation and drift reporting for InfraJournal.",
   "license": "MIT",
   "type": "module",

@@ -53,7 +53,7 @@ describe("CLI commands", () => {
   it("prints version and help", async () => {
     expect(await invoke("--version")).toMatchObject({
       code: 0,
-      out: expect.stringContaining("0.1.2"),
+      out: expect.stringContaining("0.1.3"),
     });
     expect(await invoke("--help")).toMatchObject({
       code: 0,
@@ -124,8 +124,14 @@ describe("CLI commands", () => {
     expect((await invoke("init")).code).toBe(0);
     const generated = await fs.readFile("infrajournal.yml", "utf8");
     expect(generated).toContain("project: {}\n");
+    expect(generated).toContain('"**/docker-compose.yml"');
+    await fs.writeFile(
+      "docker-compose.yml",
+      "services:\n  configured-web:\n    image: nginx:1.27\n",
+    );
     const initialized = await invoke("scan");
     expect(initialized.code).toBe(0);
+    expect(out).toContain("2 services");
     const first = await fs.readFile("infrajournal.yml", "utf8");
     expect((await invoke("init")).code).toBe(2);
     expect(await fs.readFile("infrajournal.yml", "utf8")).toBe(first);
