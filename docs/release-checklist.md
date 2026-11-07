@@ -1,10 +1,9 @@
 # Release checklist (maintainers)
 
-This checklist is **manual**; it is not a claim that the npm package is
-published. Never publish without maintainer authorization. Use an isolated,
+This checklist is **manual**. Never publish without maintainer authorization. Use an isolated,
 clean checkout and verify the version and registry account before any upload.
 
-## Before tagging
+## Before tagging a new patch release
 
 - [ ] Review [implementation status](implementation-status.md), open audit
       findings, [limitations](limitations.md), and user-facing claims.
@@ -49,7 +48,7 @@ node packages/cli/dist/index.js check --root examples/multi-service
 - [ ] Decide the release version using SemVer. Update root and package versions
       consistently, any lockfile references and generator version as needed;
       preserve snapshot schema compatibility unless a migration is documented.
-- [ ] Move confirmed entries from `CHANGELOG.md`'s unreleased section to a
+- [ ] Move confirmed entries from `CHANGELOG.md`'s `Unreleased` section to a
       dated release, add a fresh Unreleased section, and review the release
       notes. Do not mark an unreleased build as published.
 - [ ] Commit the approved changes, run verification again and review the
@@ -62,8 +61,9 @@ node packages/cli/dist/index.js check --root examples/multi-service
 - [ ] Verify the installed package from the registry on a fresh machine/clean
       directory, including `--help`, `scan`, `generate`, `check` and `ui`.
 - [ ] Manually create the matching Git tag and GitHub release after verifying
-      the published version. Paste reviewed release notes, link the changelog
-      and limitations; upload only approved artifacts.
-- [ ] Update README install wording from "intended" to actual npm instructions
-      **after** successful publication; confirm both links and license in the
-      published tarball.
+      the published version. A GitHub release is recommended for release notes
+      and traceability but is not required for npm installation. Paste reviewed
+      release notes, link the changelog and limitations; upload only approved
+      artifacts.
+- [ ] Update README install wording only when the new version is visible on npm;
+      confirm both links and license in the published tarball.

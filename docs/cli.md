@@ -1,9 +1,10 @@
 # CLI reference
 
-From a built source checkout, substitute `node packages/cli/dist/index.js` for
-`infrajournal` when running from the repository root. The npm package is not
-published. Use `--help` on the command or subcommand to see current options;
-`--version` prints the core version. The global `--verbose` shows error stacks
+Install version `0.1.1` with `npm install --global infrajournal`, or run
+`npx infrajournal --help` without a global installation. From a built source
+checkout, substitute `node packages/cli/dist/index.js` for `infrajournal`
+when running from the repository root. `--help` lists current options;
+`--version` prints the CLI version. The global `--verbose` shows error stacks
 where available and can reveal sensitive input: use with care.
 
 | Command    | Options                                                                       | Effect                                                                                                                                              |
@@ -15,12 +16,13 @@ where available and can reveal sensitive input: use with care.
 | `ui`       | `--root <dir>`, `--config <file>`, `--snapshot <file>`, `--port <number>`     | Serve a new scan or a supplied snapshot locally. `--snapshot` bypasses scanning.                                                                    |
 
 `--root` overrides `scan.root` and is resolved from the current working
-directory. `--config` chooses a YAML config, also resolved from the current
-working directory. Without it, InfraJournal looks for `infrajournal.yml`, then
-`infrajournal.yaml`, **only in the current working directory**. Generated
-output and decisions paths are relative to the resolved scan root (not to the
-config file). `--output` and `--baseline` are relative to the current working
-directory. `init` always writes in the current working directory.
+directory. `--config` chooses a YAML config relative to the current working
+directory. Without `--config`, InfraJournal looks for `infrajournal.yml`, then
+`infrajournal.yaml`, **in `--root` when provided**, or in the current working
+directory otherwise. Generated output and decisions paths are relative to the
+resolved scan root (not to the config file). `--output` and `--baseline` are
+relative to the current working directory. `init` always writes in the current
+working directory.
 
 ## Exit codes
 
@@ -91,16 +93,16 @@ infrajournal check --root examples/multi-service --baseline ./demo-docs/snapshot
 infrajournal ui --snapshot ./demo-docs/snapshot.json
 ```
 
-The example config is loaded automatically only when the working directory is
-`examples/multi-service`; from the repository root, pass
-`--config examples/multi-service/infrajournal.yml` to use its backup policies and
-project name. Do not treat scans from those two invocation styles as equivalent.
+With `--root examples/multi-service`, the example's `infrajournal.yml` is
+loaded automatically, including its project name and backup policies. To use a
+different configuration, pass `--config <file>` explicitly.
 
 `ui` binds only to `127.0.0.1`. Its default is port 4173; on collision it tries
 up to 20 higher ports and prints the selected URL. With `--port`, a busy port
 is an error; valid explicit ports are 1–65535. It serves an in-memory snapshot
 at `/api/snapshot`, does not hot reload and stops with Ctrl+C. Build the web
-bundle with `pnpm build` first.
+bundle with `pnpm build` first **only when working from source**; the npm package
+already includes dashboard assets.
 
 ### Windows
 

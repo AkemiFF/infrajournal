@@ -1,22 +1,33 @@
 # Getting started
 
 InfraJournal reads infrastructure configuration on disk; it does not run
-containers. These steps use the source checkout because the npm package has
-**not** been published. Requires Node.js >=22.12 and pnpm 12.
+containers. Install the published `0.1.1` release with Node.js >=22.12:
+
+```bash
+npm install --global infrajournal
+infrajournal --version
+# Or run without a global installation:
+npx infrajournal --help
+```
+
+Scanning is read-only. `init`, `generate` and `scan --output` write files only
+when requested. Docker is not needed.
 
 ## Build from source
 
-From the repository root:
+If you are contributing or want to run directly from a checkout, use pnpm 12
+from the repository root:
 
 ```bash
 corepack enable
-pnpm install
+pnpm install --frozen-lockfile
 pnpm build
 node packages/cli/dist/index.js --help
 ```
 
-Use `node packages/cli/dist/index.js` as the `infrajournal` command below.
-The web assets are built with `pnpm build`; without them `ui` cannot start.
+Use `node packages/cli/dist/index.js` in place of `infrajournal` if you are
+running the source build. The npm package already contains the web assets;
+`pnpm build` is needed only for the source build.
 
 ## Start your own project
 
@@ -43,23 +54,23 @@ missing baseline exits 4. Review changes before rerunning `generate`.
 
 ## Try the bundled demo
 
-After building at the repository root:
+From the repository root (whether using the npm CLI or a source build):
 
 ```bash
-cd examples/multi-service
-node ../../packages/cli/dist/index.js scan
-node ../../packages/cli/dist/index.js generate
-node ../../packages/cli/dist/index.js check
-node ../../packages/cli/dist/index.js ui
+infrajournal scan --root examples/multi-service
+infrajournal generate --root examples/multi-service
+infrajournal check --root examples/multi-service
+infrajournal ui --root examples/multi-service
 ```
 
 This scenario includes Compose, Nginx, backup-policy notes and YAML decisions.
 The scanner reports exposed host ports and an undocumented policy for the
 `uploads` volume. Its test hostnames are examples, not live destinations.
-Running `generate` changes the example's checked-in `infra-docs/`; if you want
-to leave the checkout untouched, use `generate --output <your-temporary-dir>`
-and `check --baseline <your-temporary-dir>/snapshot.json` instead. Keep that
-temporary directory outside the example scan root.
+Running `generate` writes `examples/multi-service/infra-docs/`, which is
+**ignored by Git** rather than checked in. If you want to leave even the working
+tree untouched, run `generate --root examples/multi-service --output ./demo-docs`
+and `check --root examples/multi-service --baseline ./demo-docs/snapshot.json`.
+Keep that directory outside the example scan root.
 
 See [CLI reference](cli.md), [configuration](configuration.md),
 [examples](../examples/README.md) and [limitations](limitations.md).

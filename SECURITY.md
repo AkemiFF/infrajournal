@@ -11,7 +11,8 @@ should evaluate before using it.
 ## Supported versions
 
 InfraJournal 0.1.x is published as a pre-1.0 release. Security fixes target
-the latest available patch release.
+the latest available patch release. Version `0.1.0` has a packaging defect that
+can make its npm executable exit silently; upgrade to `0.1.1`.
 
 | Version   | Status      | Notes                                                  |
 | --------- | ----------- | ------------------------------------------------------ |

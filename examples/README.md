@@ -5,15 +5,17 @@ Compose files use example image names, fake hosts and placeholder credentials;
 none of them is a deployable production stack. Environment variable **values**
 are never stored by InfraJournal — only their names appear in snapshots.
 
-All commands below assume a built CLI. From the repository root:
+Install the published CLI (Node.js >=22.12):
 
 ```bash
-pnpm install
-pnpm build
+npm install --global infrajournal
+infrajournal --version
 ```
 
-In each example directory, use `node ../../packages/cli/dist/index.js` in
-place of `infrajournal` below until the npm package is published.
+Alternatively use `npx infrajournal` in place of `infrajournal` below. If
+working from source, run `pnpm install --frozen-lockfile && pnpm build` at the
+repository root, then use `node ../../packages/cli/dist/index.js` from an
+example directory. No Docker daemon is required.
 
 ## `simple-stack`
 
@@ -82,10 +84,11 @@ infrajournal ui
 
 ## Validating the examples
 
-The core scanner can be exercised without Docker:
+From the repository root, the installed CLI loads the example's
+`infrajournal.yml` when given `--root`:
 
 ```bash
-node packages/cli/dist/index.js scan --root examples/multi-service --format json \
+infrajournal scan --root examples/multi-service --format json \
   | jq '{project: .project.name, stats: .stats}'
 ```
 

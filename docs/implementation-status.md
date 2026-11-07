@@ -1,6 +1,6 @@
 # InfraJournal implementation status
 
-Last updated: 2026-11-03
+Last updated: 2026-11-07
 
 This is the orchestrator's task board. It tracks actual delivery state, not
 aspirations. Update it when a wave closes.
@@ -51,7 +51,7 @@ aspirations. Update it when a wave closes.
 | 3    | Integration: CLI ↔ core ↔ docs ↔ UI                                                  | Orchestrator   | Done          | Full build and example workflow verified                                       |
 | 4    | QA/security audit of integrated result                                               | QA agent       | Done          | `docs/audit-final.md`; original blockers addressed and re-reviewed             |
 | 4    | Research claim verification                                                          | Research agent | Done          | Snapshot drift scope clarified                                                 |
-| 5    | Fixes, final verification, release prep                                              | Orchestrator   | In progress   | CI/build/tests/packaging verified; public release requires contacts            |
+| 5    | Fixes, final verification, release prep                                              | Orchestrator   | Done          | npm 0.1.1 package verified; docs refresh is the current maintenance task       |
 
 ## P0 checklist
 
@@ -90,8 +90,8 @@ node packages/cli/dist/index.js ui --root examples/multi-service
 
 ## Known constraints
 
-- The published npm package does not exist yet. README must say installation
-  from source until the user approves publication.
+- npm package `infrajournal@0.1.1` is published; `0.1.0` remains affected by a
+  silent npm executable bug and should not be recommended.
 - The dashboard requires a web build; `pnpm build` produces it before the CLI
   copies `apps/web/dist` to `packages/cli/web-dist`.
 - The scanner never executes Docker or Compose interpolation.

@@ -5,7 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.1.1] - Unreleased
+## [Unreleased]
+
+No unreleased changes.
+
+## [0.1.1] - 2026-11-03
 
 ### Fixed
 
@@ -15,8 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.0] - 2026-11-03
 
-First release on npm. The global/npx executable exits silently; use 0.1.1
-when available or run the source-built CLI with `node packages/cli/dist/index.js`.
+First npm release. The global/npx executable in this version exits silently;
+upgrade to `0.1.1`.
 
 ### Added
 

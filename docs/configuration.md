@@ -1,11 +1,12 @@
 # Configuration
 
-`infrajournal.yml` or `infrajournal.yaml` is optional. InfraJournal looks only
-in the current working directory (`.yml` takes precedence). Run `init` to make
-a starter `infrajournal.yml`; `init --force` overwrites it. You can select a
-file elsewhere with `--config`. The YAML schema is strict: unknown keys are
-rejected. `version` must be `1` (default `1`). A config file over 1 MiB is
-rejected.
+`infrajournal.yml` or `infrajournal.yaml` is optional. Without `--root`,
+InfraJournal looks in the current working directory (`.yml` takes precedence).
+With `--root <dir>` and no explicit `--config`, it looks in that scan root.
+Run `init` to make a starter `infrajournal.yml` in the current directory;
+`init --force` overwrites it. You can select a file elsewhere with `--config`.
+The YAML schema is strict: unknown keys are rejected. `version` must be `1`
+(default `1`). A config file over 1 MiB is rejected.
 
 ```yaml
 version: 1

@@ -5,3 +5,4 @@ web-dist
 pnpm-lock.yaml
 apps/web/public/snapshot.json
 examples/**/infra-docs
+packages/cli/infra-docs

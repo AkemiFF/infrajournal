@@ -1,6 +1,6 @@
 # Contributor Covenant Code of Conduct
 
-> **Before public release:** replace `maintainers@example.com` with the real
+> **Maintainer action:** replace `maintainers@example.com` with the real
 > maintainer contact address in the Enforcement section. This placeholder is
 > intentionally obvious and must not be shipped as the final contact.
 

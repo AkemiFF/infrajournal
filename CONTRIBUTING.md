@@ -25,7 +25,7 @@ files; they do not start containers.
 ## Setup
 
 ```bash
-git clone <repository-url> infrajournal
+git clone https://github.com/AkemiFF/infrajournal.git infrajournal
 cd infrajournal
 pnpm install
 pnpm typecheck

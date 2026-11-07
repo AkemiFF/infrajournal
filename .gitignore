@@ -14,6 +14,7 @@ coverage/
 # Generated output used during local demos and tests
 apps/web/public/snapshot.json
 examples/**/infra-docs/
+packages/cli/infra-docs/
 examples/**/infra-decisions/*.local.yml
 
 # Local screenshots

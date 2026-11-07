@@ -9,14 +9,13 @@
 InfraJournal reads the configuration files you already maintain — Docker
 Compose, Nginx and Caddy — and turns them into a stable infrastructure
 inventory: services, networks, volumes, domains, endpoints, dependencies,
-warnings and architecture decision records. It is local-first, deterministic
-and read-only by design. It does not need a Docker daemon, cloud credentials or
-network access.
+warnings and architecture decision records. Scanning is local-first,
+deterministic and read-only; `init`, `generate` and `scan --output` write files
+only when requested. No Docker daemon, cloud credentials or network access are
+needed for scanning.
 
-> **Release status.** Version 0.1.0 was published to npm, but its global/npx
-> executable exits without running. This is fixed in the 0.1.1 release candidate;
-> install 0.1.1 after publication. Until then, run the built CLI directly with
-> `node packages/cli/dist/index.js` from a source checkout.
+> **Current release: 0.1.1.** Upgrade if you installed 0.1.0: its npm executable
+> exited without running. Version 0.1.1 fixes global and `npx` invocation.
 
 ## The problem
 
@@ -54,7 +53,7 @@ Available in the core scanner today:
 - **Three validated examples** — simple stack, Caddy reverse proxy and a
   multi-service Compose + Nginx stack with ADRs.
 
-Shipped in 0.1.0:
+Available in 0.1.1:
 
 - `infrajournal` CLI with `init`, `scan`, `generate`, `check` and `ui`.
 - Markdown documentation generation with preservation of hand-edited files.
@@ -63,27 +62,28 @@ Shipped in 0.1.0:
 
 ## Install
 
-**From source (available now).** Node.js 22.12 or newer and pnpm 12 are
-required.
+**Install from npm (Node.js 22.12 or newer):**
 
 ```bash
-# In an existing checkout of this repository:
+npm install --global infrajournal
+infrajournal --version
+# Or run without a global install:
+npx infrajournal --help
+```
+
+**Build from source (pnpm 12 required):**
+
+```bash
+git clone https://github.com/AkemiFF/infrajournal.git
+cd infrajournal
 corepack enable
-pnpm install
+pnpm install --frozen-lockfile
 pnpm build
 node packages/cli/dist/index.js --version
 ```
 
-Commands below use `infrajournal` as shorthand for the source-built
-`node packages/cli/dist/index.js` unless noted otherwise.
-
-**From npm (after the 0.1.1 patch is published):**
-
-```bash
-npm install --global infrajournal
-# or run without installing:
-npx infrajournal --help
-```
+The examples below use the installed `infrajournal` command. In a source-only
+checkout, substitute `node packages/cli/dist/index.js`.
 
 ## 60-second quickstart
 
@@ -92,20 +92,17 @@ worker, PostgreSQL, Redis, three named volumes and three ADRs. It contains no
 runnable secrets.
 
 ```bash
-cd examples/multi-service
-
-# Scan only; prints a summary and writes nothing.
-node ../../packages/cli/dist/index.js scan
-
-# Generate Markdown documentation and a snapshot baseline.
-node ../../packages/cli/dist/index.js generate
-
-# Compare the current scan with the generated snapshot.
-node ../../packages/cli/dist/index.js check
-
-# Explore the graph and findings in a local dashboard.
-node ../../packages/cli/dist/index.js ui
+# From the repository root; --root loads the example's infrajournal.yml.
+infrajournal scan --root examples/multi-service
+infrajournal generate --root examples/multi-service
+infrajournal check --root examples/multi-service
+infrajournal ui --root examples/multi-service
 ```
+
+`generate` writes into `examples/multi-service/infra-docs/` (ignored by Git).
+Open the URL printed by `ui` and stop the server with Ctrl+C. For a stack of
+your own, run `infrajournal init` in its directory and follow
+[getting started](https://github.com/AkemiFF/infrajournal/blob/main/docs/getting-started.md).
 
 The scan reports the services and routes it discovers and flags the published
 Nginx ports and the `uploads` volume's undocumented backup policy. The
@@ -113,7 +110,8 @@ Nginx ports and the `uploads` volume's undocumented backup policy. The
 `infrajournal.yml`; a warning does **not** mean a backup is absent. The scan is
 read-only.
 
-See [getting started](docs/getting-started.md) for the full source-built workflow.
+See [getting started](https://github.com/AkemiFF/infrajournal/blob/main/docs/getting-started.md)
+for both npm and source workflows.
 
 ## CLI examples
 
@@ -132,7 +130,7 @@ and `metadata` fields; `stats` contains counts from **this** scan, not fixed
 sample metrics. Pipe it to `jq '.stats'` to inspect them.
 
 `scan --format json` emits the snapshot object described in
-[docs/architecture.md](docs/architecture.md). It never writes files unless
+[docs/architecture.md](https://github.com/AkemiFF/infrajournal/blob/main/docs/architecture.md). It never writes files unless
 `--output <file>` is given.
 
 ### Generate documentation
@@ -144,7 +142,7 @@ infrajournal generate
 Writes Markdown and `snapshot.json` under `output.directory` (default
 `./infra-docs`). Generated files carry a marker; files without the marker are
 preserved, so hand-written notes are not overwritten. The exact generated file
-list is documented in [docs/configuration.md](docs/configuration.md).
+list is documented in [docs/configuration.md](https://github.com/AkemiFF/infrajournal/blob/main/docs/configuration.md).
 
 ### Detect drift
 
@@ -173,14 +171,14 @@ infrajournal ui --port 8080
 
 The server binds to `127.0.0.1` only. If the default port is busy it tries the
 next 20 ports and prints the chosen URL; an explicitly requested busy port is an
-error. The dashboard requires a built web bundle (`pnpm build`).
+error. The npm package includes the dashboard; `pnpm build` is required only
+when running from source.
 
 ## Dashboard preview
 
-There is no checked-in screenshot yet. Run the source-built `ui` command in
-`examples/multi-service` and open the printed localhost URL to view the
-dashboard. Screenshot placeholder: capture and review a **real** dashboard
-image before adding one to `docs/assets/`.
+There is no checked-in screenshot yet. Run `infrajournal ui --root
+examples/multi-service` and open the printed localhost URL to view the live
+dashboard. A real screenshot can be added once captured and reviewed.
 
 ## Supported configuration
 
@@ -193,7 +191,7 @@ image before adding one to `docs/assets/`.
 
 Add paths in `scan.include` if your files use other locations. Include patterns
 and exclusion semantics are documented in
-[docs/configuration.md](docs/configuration.md). Anything outside the subsets is
+[docs/configuration.md](https://github.com/AkemiFF/infrajournal/blob/main/docs/configuration.md). Anything outside the subsets is
 reported as a warning where the parser can recognize it, and ignored otherwise.
 
 ## Limitations
@@ -210,7 +208,7 @@ reported as a warning where the parser can recognize it, and ignored otherwise.
 | Backups   | A missing backup policy is a documentation finding, not proof that no backup exists.                                                           |
 | Security  | Redaction is best-effort. Generated snapshots can still contain sensitive topology, image names and decision text; review before publishing.   |
 
-Full details and residual risks: [docs/limitations.md](docs/limitations.md).
+Full details and residual risks: [docs/limitations.md](https://github.com/AkemiFF/infrajournal/blob/main/docs/limitations.md).
 
 ## Architecture overview
 
@@ -229,12 +227,12 @@ flowchart LR
 
 The core pipeline is deterministic: given the same inputs, IDs, ordering,
 resource content and `contentHash` are stable. Only `metadata.generatedAt`
-varies. See [docs/architecture.md](docs/architecture.md) for the package map,
+varies. See [docs/architecture.md](https://github.com/AkemiFF/infrajournal/blob/main/docs/architecture.md) for the package map,
 ID strategy, snapshot versioning, drift algorithm and threat boundaries.
 
 ## Security and privacy
 
-InfraJournal is local-first and read-only. It does not execute scanned files,
+InfraJournal's scanner is local-first and read-only. It does not execute scanned files,
 start containers, contact registries or send telemetry. It reads only matched
 files inside the scan root; symlinks that escape the root are skipped.
 Environment **values**, `env_file` contents, Compose secret files and the
@@ -245,25 +243,19 @@ best-effort secret redaction.
 
 These guarantees reduce exposure but are not absolute. Generated documentation
 can reveal internal hostnames, ports and architectural detail. Review output
-before committing or publishing it. See [SECURITY.md](SECURITY.md) for the
+before committing or publishing it. See [SECURITY.md](https://github.com/AkemiFF/infrajournal/blob/main/SECURITY.md) for the
 threat model and reporting process.
 
 ## Roadmap
 
-**Shipped in this checkout (0.1.1 release candidate)**
+**Shipped in 0.1.1**
 
 - Schema-versioned snapshot and config contracts.
 - Deterministic Compose, Nginx and Caddy scanning.
 - Stable graph, evidence, diagnostics and decision records.
 - Example stacks and source-level validation.
-- Source-built `init`, `scan`, `generate`, `check` and `ui` commands,
+- CLI `init`, `scan`, `generate`, `check` and `ui` commands,
   Markdown generation, JSON baselines and drift reports.
-
-**P0 — before the 0.1.1 patch release**
-
-- Complete final QA, packaging verification and release checklist.
-- Replace placeholder community/security contact addresses.
-- Publish the corrected npm package and tag only after maintainer approval.
 
 **P1 — next (candidates, not committed)**
 
@@ -285,11 +277,11 @@ notes. No runtime or hosted service is required by the roadmap.
 
 ## Contributing
 
-Contributions are welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md), which
+Contributions are welcome. Start with [CONTRIBUTING.md](https://github.com/AkemiFF/infrajournal/blob/main/CONTRIBUTING.md), which
 covers the pnpm workspace, verification commands, parser rules and pull request
-expectations. Please follow the [Code of Conduct](CODE_OF_CONDUCT.md) and report
-security issues privately as described in [SECURITY.md](SECURITY.md).
+expectations. Please follow the [Code of Conduct](https://github.com/AkemiFF/infrajournal/blob/main/CODE_OF_CONDUCT.md) and report
+security issues privately as described in [SECURITY.md](https://github.com/AkemiFF/infrajournal/blob/main/SECURITY.md).
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+MIT. See [LICENSE](https://github.com/AkemiFF/infrajournal/blob/main/LICENSE).
